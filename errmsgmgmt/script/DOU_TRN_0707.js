@@ -5,7 +5,7 @@
 *Open Issues :
 *Change history :
 *@LastModifyDate : 2022.06.27
-*@LastModifier : 
+*@LastModifier : Bao Du
 *@LastVersion : 1.0
 * 2022.06.27 
 * 1.0 Creation
@@ -26,7 +26,7 @@
      * @extends 
      * @class DOU_TRN_0707 : DOU_TRN_0707 생성을 위한 화면에서 사용하는 업무 스크립트를 정의한다.
      */
-    function DOU_TRN_0707() {
+    /*function DOU_TRN_0707() {
     	this.processButtonClick		= tprocessButtonClick;
     	this.setSheetObject 		= setSheetObject;
     	this.loadPage 				= loadPage;
@@ -35,7 +35,7 @@
     	this.doActionIBSheet 		= doActionIBSheet;
     	this.setTabObject 			= setTabObject;
     	this.validateForm 			= validateForm;
-    }
+    }*/
     
    	/* necessary */
     var sheetObjects=new Array();
@@ -86,11 +86,11 @@
 	
 	function loadPage() {
 		for(i = 0; i < sheetObjects.length; i++){			
-			ComConfigSheet (sheetObjects[i]);
+			ComConfigSheet(sheetObjects[i]);
 			initSheet(sheetObjects[i],i+1);		
 			ComEndConfigSheet(sheetObjects[i]);
 			
-			doActionIBSheet(sheetObjects[i],document.form,IBSEARCH);
+			doActionIBSheet(sheetObjects[i], document.form, IBSEARCH);
 		}
 	}
 	
@@ -125,7 +125,9 @@
 	                   ];
                   
                 InitColumns(cols);
-                SetWaitImageVisible(0); //waiting image during processing
+                //whether to display waiting image during processing
+                //Set not to display waiting image for processing : mySheet.SetWaitImageVisible(0);
+                SetWaitImageVisible(0); 
                 resizeSheet();
               }
             break;
@@ -175,10 +177,51 @@
     }
 	
 	//when search done : close the loading popup - Reference : IBSheet Events
-	function sheet1_OnSearchEnd(sheetObj, Code, Msg, StCode, StMsg) {
+	/**
+	 * [AFTER SEARCH]
+	 * 
+	 * @param Code, Msg, StCode, StMsg
+	 * @return @returns
+	 * @exception EventException
+	 */
+	function sheet1_OnSearchEnd(Code, Msg, StCode, StMsg) {
+		//ObjectID_OnSearchEnd(Code, Msg, StCode, StMsg)
+		//Code (type Long): Processing result code (0 is success, other is error)
+		//Msg (String): Processing result message
+		//StCode (Integer): HTTP response code
+		//StMsg (String): HTTP response message 
      	ComOpenWait(false);
     }
 	
+	function sheet1_OnSaveEnd(Code, Msg, StCode, StMsg){
+		//Code similar with OnSearchEnd() but O or higher is success
+		//The rest is the same.
+		//This event can fire when DoSave or DoAllSave function is called.
+		//Perform business here
+	}
+	
+	function sheet1_OnClick(Row, Col, Value, CellX, CellY, CellW, CellH){
+		//All parameter are Long in type except Value type String
+		//Row : row index of the cell
+		//Column : Column index of the cell
+		//Value : Cell value where the event fired.
+		//CellX and CellY : coordinate of the cell
+		//CellW : Width , CellH : Height
+		//OnDblClick() is as similar as OnClick()
+	}
+	
+	function sheet1_OnChange(Row, Col, Value, OldValue, RaiseFlag){
+		//RaiseFlag (Integer) Event fire option (0: manual editing, 1: method, 2: paste)
+	}
+	
+	
+	/**
+	 * [CATCH EDIT EVENT AND FIRE CHECK MSG CODE]
+	 * 
+	 * @param sheetObject
+	 * @returns
+	 * @exception 
+	 */
 	function sheet1_OnAfterEdit(sheetObject, Row, Col){
 		//alert("Exit editing.");
 		var colName = sheetObject.ColSaveName(Col); //get Name of currently edit column
@@ -191,12 +234,18 @@
 			if(checkResult) {
 				sheetObject.SetCellValue(Row, Col, msgCode);
 			}else {
-				ComShowCodeMessage("COM132201");
+				ComShowCodeMessage("COM132201"); //COM130103
 				sheetObject.SetCellValue(Row, Col, "");			
 			}
 		}
 	}
 	
+	/**
+	 * [VALIDATE MESSAGE CODE]
+	 * 
+	 * @param messageCode
+	 * @returns Boolean
+	 */
 	function checkMessageCodeFormat(messageCode){
 		//using regular expression literal
 		/* ^  : match the beginning of input. ex: /^A/ does not match "an A", but does match the first "A" in "An A".
