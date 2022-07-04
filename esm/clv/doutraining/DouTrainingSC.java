@@ -125,6 +125,7 @@ public class DouTrainingSC extends ServiceCommandSupport {
 		try{
 			begin();
 			command.manageErrMsg(event.getErrMsgVOS(), account);
+			//when insert, update, delete success return a message for client.
 			eventResponse.setUserMessage(new ErrorHandler("DOU00001").getUserMessage());
 			commit();
 		} catch(EventException ex) {
