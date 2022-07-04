@@ -114,6 +114,13 @@ public class ErrMsgMgmtBCImpl extends BasicCommandSupport implements ErrMsgMgmtB
 		}
 	}
 	
+	/**
+	 * Checking for duplicate Message Code
+	 * 
+	 * @param errMsgCode
+	 * @return
+	 * @exception EventException
+	 */
 	public boolean isDuplicateMsgCode(String errMsgCode) throws EventException {
 		try {
 			//Create new Error Message Object with the Code that gets inserted from client

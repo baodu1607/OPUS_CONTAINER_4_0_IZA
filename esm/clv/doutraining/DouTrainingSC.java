@@ -75,7 +75,7 @@ public class DouTrainingSC extends ServiceCommandSupport {
 		EventResponse eventResponse = null;
 
 		// SC가 여러 이벤트를 처리하는 경우 사용해야 할 부분
-		if (e.getEventName().equalsIgnoreCase("DouTrn0707Event")) { //if events are from DouTrn0707Event
+		if (e.getEventName().equalsIgnoreCase("DouTrn0707Event")) { //if events are from(in) DouTrn0707Event
 			if (e.getFormCommand().isCommand(FormCommand.SEARCH)) {
 				eventResponse = searchErrMsg(e);
 			}

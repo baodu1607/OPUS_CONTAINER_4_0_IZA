@@ -32,6 +32,19 @@ import com.clt.apps.opus.esm.clv.doutraining.errmsgmgmt.vo.ErrMsgVO;
  * @since J2EE 1.6
  */
 
+/**
+ * HTTP Parser<br>
+ * - Phân tích giá trị của đối tượng HTML DOM được gửi đến máy chủ 
+ * thông qua com.clt.apps.opus.esm.clv.doutraining dưới dạng một biến Java (một Object Java).
+ * Có thể coi là cast value.<br>
+ * - Chuyển đổi thông tin được phân tích cú pháp thành một sự kiện, đưa nó vào request và 
+ * yêu cầu thực thi với DouTrainingSC<br>
+ * - EventResponse gửi kết quả thực thi từ DouTrainingSC tới View (JSP) được đặt trong request.<br>
+ * @author Bao Du
+ * @see DounTrainingEvent
+ * @since J2EE 1.6
+ */
+
 public class DOU_TRN_0707HTMLAction extends HTMLActionSupport {
 
 	private static final long serialVersionUID = 1L;
@@ -50,7 +63,10 @@ public class DOU_TRN_0707HTMLAction extends HTMLActionSupport {
 	public Event perform(HttpServletRequest request) throws HTMLActionException {
 		
     	FormCommand command = FormCommand.fromRequest(request); //framework support : receive req from client
-		DouTrn0707Event event = new DouTrn0707Event();
+		/* Declare for mapping
+		 * <event-class>com.clt.apps.opus.esm.clv.doutraining.errmsgmgmt.event.DouTrn0707Event</event-class>
+		 */
+    	DouTrn0707Event event = new DouTrn0707Event(); 
 		
 		if(command.isCommand(FormCommand.MULTI)) { //like req.isMULTI()
 			//based on Action we create Event equivalent.

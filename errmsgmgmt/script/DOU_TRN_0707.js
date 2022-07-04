@@ -85,7 +85,18 @@
 	}
 	
 	function loadPage() {
-		for(i = 0; i < sheetObjects.length; i++){			
+		for(i = 0; i < sheetObjects.length; i++){
+			/* (inside ComConfigSheet) ShowButtonImage method check or configure 
+			 * the button image styles of popup and combo
+			 * 0: Display combo, calendar and pop-up image only when is focused.
+			 */
+			/* (inside ComConfigSheet) SetDown2ExcelConfig : configure some basic settings for 
+			 * excel download
+			 * SheetDesign : whether to apply IBSheet design concept to download file default = 0.
+			 */
+			/* (inside ComConfigSheet) DataRowHeight: check or configure row height of all data rows.
+			 * This property can be set at pixels. Default value is 21 pixels.
+			 */
 			ComConfigSheet(sheetObjects[i]);
 			initSheet(sheetObjects[i],i+1);		
 			ComEndConfigSheet(sheetObjects[i]);
@@ -102,32 +113,51 @@
               with(sheetObj){ //for shorten the syntax 
                 var HeadTitle="|Del|Msg Cd|Msg Type|Msg level|Message|Description" ;
                 var headCount=ComCountHeadTitle(HeadTitle);
-                //SearchMode: 2 is search all
-                //MergeSheet: 5 Allow merge in the header rows only
-                //DataRowMerge: whether to allow horizontal merge of the entire row (Default=0)
-                SetConfig( { SearchMode:2, MergeSheet:5, Page:20, DataRowMerge:1 } );
-                //Sort : allow sorting by clicking on the header
-                //HeaderCheck : Whether the CheckAll in the header is checked (default = 1)
+                /*SearchMode: 2 is search all
+                MergeSheet: 5 Allow merge in the header rows only
+                DataRowMerge: whether to allow horizontal merge of the entire row (Default=0)*/
+                //SetConfig( { SearchMode:2, MergeSheet:5, Page:20, DataRowMerge:1 } );
+                SetConfig({SearchMode: 2});
+                /*Sort : allow sorting by clicking on the header
+                HeaderCheck : Whether the CheckAll in the header is checked (default = 1)*/
                 var info    = { Sort:1, ColMove:0, HeaderCheck:0, ColResize:1 };
                 //config headers using JSON 
                 var headers = [ { Text:HeadTitle, Align:"Center"} ];
                 
                 InitHeaders(headers, info);
-
+                /* SaveName (String) : a parameter name used to save or search data
+                 * CalcLogic can be used to configure calculation formula for the data. Calculation equation by column.
+                 * Format (String) : data mask application format. Can be used to configure whether to apply Mask to data.
+                 * PointCount can be used to configure the number of decimal places to display for column type Float.
+                 * UpdateEdit can be used to configure edit ability of data the transaction status of which is Search.
+                 * 			+ Whether to allow data editing when transaction is in "Search" state (default value is 1)
+                 * InsertEdit (boolean) can be used to configure edit ability of data the transaction status of which is Insert.
+                 * 			+ Whether to allow data editing when transaction is in "Insert" state (default value is 1)
+                 * MultiLineText (boolean) whether to use multiple lines.
+                 * ColMerge (boolean) whether to allow column merging.
+                 */
                 var cols = [ 
                          {Type:"Status",    Hidden:1, Width:30,   Align:"Center",  ColMerge:0,   SaveName:"ibflag" },
-	                     {Type:"DelCheck",  Hidden:0, Width:45,   Align:"Center",  ColMerge:1,   SaveName:"DEL",         KeyField:0,   CalcLogic:"",   Format:"",            PointCount:0,   UpdateEdit:1,   InsertEdit:1 },
-	                     {Type:"Text",      Hidden:0, Width:80,   Align:"Center",  ColMerge:0,   SaveName:"err_msg_cd",  KeyField:1,   CalcLogic:"",   Format:"",            PointCount:0,   UpdateEdit:0,   InsertEdit:1 },
-	                     {Type:"Combo",     Hidden:0, Width:80,   Align:"Center",  ColMerge:0,   SaveName:"err_tp_cd",   KeyField:1,   CalcLogic:"",   Format:"",            PointCount:0,   UpdateEdit:1,   InsertEdit:1, ComboText:"Server|UI|Both", ComboCode:"S|U|B" },
-	                     {Type:"Combo",     Hidden:0, Width:80,   Align:"Center",  ColMerge:0,   SaveName:"err_lvl_cd",  KeyField:1,   CalcLogic:"",   Format:"",            PointCount:0,   UpdateEdit:1,   InsertEdit:1, ComboText:"ERR|WARNING|INFO", ComboCode:"E|W|I" },
-	                     {Type:"Text",      Hidden:0, Width:400,  Align:"Left",    ColMerge:0,   SaveName:"err_msg",     KeyField:1,   CalcLogic:"",   Format:"",            PointCount:0,   UpdateEdit:1,   InsertEdit:1, MultiLineText:1 },
-	                     {Type:"Text",      Hidden:0, Width:250,  Align:"Left",    ColMerge:0,   SaveName:"err_desc",    KeyField:0,   CalcLogic:"",   Format:"",            PointCount:0,   UpdateEdit:1,   InsertEdit:1 } 
+	                     {Type:"DelCheck",  Hidden:0, Width:45,   Align:"Center",  ColMerge:1,   SaveName:"DEL",         KeyField:0, 	UpdateEdit:1,   InsertEdit:1 },
+	                     {Type:"Text",      Hidden:0, Width:80,   Align:"Center",  ColMerge:0,   SaveName:"err_msg_cd",  KeyField:1, 	UpdateEdit:0,   InsertEdit:1 },
+	                     {Type:"Combo",     Hidden:0, Width:80,   Align:"Center",  ColMerge:0,   SaveName:"err_tp_cd",   KeyField:1, 	UpdateEdit:1,   InsertEdit:1, ComboText:"Server|UI|Both", ComboCode:"S|U|B" },
+	                     {Type:"Combo",     Hidden:0, Width:80,   Align:"Center",  ColMerge:0,   SaveName:"err_lvl_cd",  KeyField:1, 	UpdateEdit:1,   InsertEdit:1, ComboText:"ERR|WARNING|INFO", ComboCode:"E|W|I" },
+	                     {Type:"Text",      Hidden:0, Width:400,  Align:"Left",    ColMerge:0,   SaveName:"err_msg",     KeyField:1, 	UpdateEdit:1,   InsertEdit:1, MultiLineText:1 },
+	                     {Type:"Text",      Hidden:0, Width:250,  Align:"Left",    ColMerge:0,   SaveName:"err_desc",    KeyField:0, 	UpdateEdit:1,   InsertEdit:1 } 
 	                   ];
                   
                 InitColumns(cols);
-                //whether to display waiting image during processing
-                //Set not to display waiting image for processing : mySheet.SetWaitImageVisible(0);
-                SetWaitImageVisible(0); 
+                /* WaitImageVisible : Check or configure whether to display waiting image during processing. 
+                 * Depending on the property setting, waiting images may or may not display for different processing.
+                 * 
+                 */
+                //Check whether to display waiting image for processing
+                if(GetWaitImage() === 1){
+                	SetWaitImageVisible(1);
+                }else{
+                	SetWaitImageVisible(0);
+                }
+                 
                 resizeSheet();
               }
             break;
@@ -141,17 +171,18 @@
 	function doActionIBSheet(sheetObj,formObj,sAction) {
         switch(sAction) {
 			case IBSEARCH:     			            
-				ComOpenWait(true); //loading page 
+				ComOpenWait(true); //loading page
 				
 				/* sheetObj.DoSearch(PageUrl, [Param], [Opt]) 
 				 * PageUrl : search XML page file name
 				 * Param   : search condition Query String, default = "" */
 				formObj.f_cmd.value = SEARCH; //set parameter = SEARCH
- 				sheetObj.DoSearch("DOU_TRN_0707GS.do", FormQueryString(formObj)); //call to server
+ 				sheetObj.DoSearch("DOU_TRN_0707GS.do", FormQueryString(formObj)); //call to HTML
 				break;
 				// May use GetSearchData() instead if do not understand well with Opt of DoSeach()
 				
 			case IBSAVE:
+				ComOpenWait(true);
             	formObj.f_cmd.value = MULTI;
                 sheetObj.DoSave("DOU_TRN_0707GS.do", FormQueryString(formObj));              
 				break;
@@ -176,9 +207,8 @@
         }
     }
 	
-	//when search done : close the loading popup - Reference : IBSheet Events
 	/**
-	 * [AFTER SEARCH]
+	 * After Search. When search done : close the loading popup - Reference : IBSheet Events
 	 * 
 	 * @param Code, Msg, StCode, StMsg
 	 * @return @returns
@@ -197,7 +227,7 @@
 		//Code similar with OnSearchEnd() but O or higher is success
 		//The rest is the same.
 		//This event can fire when DoSave or DoAllSave function is called.
-		//Perform business here
+		ComOpenWait(false);
 	}
 	
 	function sheet1_OnClick(Row, Col, Value, CellX, CellY, CellW, CellH){
@@ -216,7 +246,7 @@
 	
 	
 	/**
-	 * [CATCH EDIT EVENT AND FIRE CHECK MSG CODE]
+	 * Catch edit event and fire check message code.
 	 * 
 	 * @param sheetObject
 	 * @returns
@@ -241,7 +271,7 @@
 	}
 	
 	/**
-	 * [VALIDATE MESSAGE CODE]
+	 * validate message code
 	 * 
 	 * @param messageCode
 	 * @returns Boolean
