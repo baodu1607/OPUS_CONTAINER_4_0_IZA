@@ -102,8 +102,7 @@
 		<div class="opus_design_grid">
 			<h3 class="title_design">Master</h3>
 			<div class="opus_design_btn">
-            	<button type="button" class="btn_accent" name="btn_Add" id="btn_Add">Row Add</button> <!--
-		    	--><button type="button" class="btn_accent" name="btn_Delete" id="btn_Delete">Delete Row</button>
+            	<button type="button" class="btn_accent" name="btn_Add" id="btn_Add">Row Add</button
         	</div>			
 		</div>
 		<script language="javascript">ComSheetObject('sheet1');</script>
@@ -113,8 +112,7 @@
 		<div class="opus_design_grid">
 			<h3 class="title_design">Detail</h3>
 			<div class="opus_design_btn">
-            	<button type="button" class="btn_accent" name="btn_dtl_Add" id="btn_dtl_Add">Row Add</button> <!--
-		   		--><button type="button" class="btn_accent" name="btn_dtl_Delete" id="btn_dtl_Delete">Delete Row</button>
+            	<button type="button" class="btn_accent" name="btn_dtl_Add" id="btn_dtl_Add">Row Add</button>
         	</div>		
 		</div>
 		<script language="javascript">ComSheetObject('sheet2');</script>
