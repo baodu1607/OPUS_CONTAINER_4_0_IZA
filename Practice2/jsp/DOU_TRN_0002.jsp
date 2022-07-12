@@ -5,7 +5,7 @@
 *@FileTitle : Practice 2
 *Open Issues :
 *Change history :
-*@LastModifyDate : 2022.07.06
+*@LastModifyDate : 2022.07.11
 *@LastModifier : 
 *@LastVersion : 1.0
 * 2022.07.04 
@@ -35,7 +35,7 @@
 	
 	String strUsr_id		= "";
 	String strUsr_nm		= "";
-	Logger log = Logger.getLogger("com.clt.apps.DouTraining.CodeManagement"); //???
+	Logger log = Logger.getLogger("com.clt.apps.DouTraining.CodeManagement");
 	
 	try {
 		SignOnUserAccount account=(SignOnUserAccount)session.getAttribute(CommonWebKeys.SIGN_ON_USER_ACCOUNT);
@@ -49,7 +49,6 @@
 			strErrMsg = new ErrorHandler(serverException).loadPopupMessage();
 		}
 		
-		//???
 		GeneralEventResponse eventResponse = (GeneralEventResponse) request.getAttribute("EventResponse");
 	}catch (Exception e) {
 		out.println(e.toString());
@@ -102,7 +101,7 @@
 		<div class="opus_design_grid">
 			<h3 class="title_design">Master</h3>
 			<div class="opus_design_btn">
-            	<button type="button" class="btn_accent" name="btn_Add" id="btn_Add">Row Add</button
+            	<button type="button" class="btn_accent" name="btn_Add" id="btn_Add">Row Add</button>
         	</div>			
 		</div>
 		<script language="javascript">ComSheetObject('sheet1');</script>

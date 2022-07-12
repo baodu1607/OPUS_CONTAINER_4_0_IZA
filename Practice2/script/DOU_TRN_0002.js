@@ -4,7 +4,7 @@
 *@FileTitle : Practice 2
 *Open Issues :
 *Change history :
-*@LastModifyDate : 2022.07.06
+*@LastModifyDate : 2022.07.11
 *@LastModifier : Bao Du
 *@LastVersion : 1.0
 * 2022.07.04 
@@ -19,7 +19,6 @@ document.onclick = processButtonClick;
 /**
  * Branching to the corresponding login when a button on the screen is pressed.
  * 
- * @param
  */
 function processButtonClick() {
 	try {
@@ -41,8 +40,8 @@ function processButtonClick() {
 					because at that time to function will be called at the same time
 					but only one sheet contained data, other may or may not contain data.
 				*/
-				// IsDataModified() check transaction status of data rows.
-				// If any data is in transaction status other than "Search", 1 is returned; otherwise, 0 is returned.
+				/* IsDataModified() check transaction status of data rows.
+				 * If any data is in transaction status other than "Search", 1 is returned; otherwise, 0 is returned*/
 				
 				var sheet1RowStatus = sheetObject1.IsDataModified();
 				var sheet2RowStatus = sheetObject2.IsDataModified();
@@ -50,15 +49,21 @@ function processButtonClick() {
 					ComShowCodeMessage("COM130503");
 					break; 
 				}
-				if((sheet1RowStatus&&sheet2RowStatus)||sheet1RowStatus){
+				
+				/*if((sheet1RowStatus&&sheet2RowStatus)||sheet1RowStatus){
 					//both sheet1 and sheet2 contain transaction status other than search
 					//sheet1 contain transaction status other than search
 					doActionIBSheet(sheetObject1, formObj, IBSAVE);
 				}else {
 //					console.log(sheetObject2.GetSaveString());
 					doActionIBSheet(sheetObject2, formObj, IBSAVE);
-				}
+				}*/
 				
+				if(sheet1RowStatus){
+					doActionIBSheet(sheetObject1, formObj, IBSAVE);
+				}else if(sheet2RowStatus){
+					doActionIBSheet(sheetObject2, formObj, IBSAVE);
+				}				
 				break;
 				
 			case "btn_Add":
@@ -66,11 +71,11 @@ function processButtonClick() {
 				break;
 			
 			case "btn_dtl_Add":
-				var selectRow=sheetObject1.GetSelectRow();
+				var selectRow=sheetObject1.GetSelectRow(); //index of current select row
 				var intg_cd_id=sheetObject1.GetCellValue(selectRow,"intg_cd_id");
-				sheetObject2.DataInsert(-1);
+				sheetObject2.DataInsert(-1); //last row
 				var row=sheetObject2.GetSelectRow();
-				console.log(row);
+				//console.log(row);
 				sheetObject2.SetCellValue(row,"intg_cd_id",intg_cd_id);
 			break;
 
@@ -127,7 +132,7 @@ function initSheet(sheetObj, sheetNo) {
             	"|Del|Subsystem|Cd ID|Cd Name|Length|Cd Type|Table Name|Description Remark|Flag|Create User|Create Date|Update User|Update Date";
             var headCount = ComCountHeadTitle(HeadTitle);           
             SetConfig({SearchMode: 2});            
-            var info    = { Sort:1, ColMove:0, HeaderCheck:0, ColResize:1 };            
+            var info    = { Sort:1, ColMove:0, ColResize:1 };            
             var headers = [ { Text:HeadTitle, Align:"Center"} ];
             
             InitHeaders(headers, info);
@@ -152,17 +157,13 @@ function initSheet(sheetObj, sheetNo) {
                      {Type:"Date",   Hidden:0, Width:80,   Align:"Left",    SaveName:"upd_d",  			KeyField:0, 	UpdateEdit:1,   InsertEdit:1, Format:"Ymd" }
                    ];
               
-            InitColumns(cols);
-            
-            //Check whether to display waiting image for processing
-            if(GetWaitImage() === 1){
-            	SetWaitImageVisible(1);
-            }else{
-            	SetWaitImageVisible(0);
-            }
-             
+            InitColumns(cols);                        
             resizeSheet(sheetNo);
             SetSheetHeight(240);
+            /*Because waiting image displays as default but this initSheet() do not a search
+             * or saving method is called where user waiting time is required --> set this property
+             * as 0 to remove waiting image*/
+            SetWaitImageVisible(0);
           }
           break;
           
@@ -183,18 +184,11 @@ function initSheet(sheetObj, sheetNo) {
       			     	{Type:"Text",      Hidden:0, Width:600,  Align:"Center",  SaveName:"intg_cd_val_desc",    KeyField:0,   UpdateEdit:1,   InsertEdit:1 },
       			     	{Type:"Text",      Hidden:0, Width:50,   Align:"Center",  SaveName:"intg_cd_val_dp_seq",  KeyField:0,   UpdateEdit:1,   InsertEdit:1 }        		               		            
       			     ];
-        		
-        		/*var cols = [ 
-        			            {Type:"Status", Hidden:0, Width:60,  Align:"Center", ColMerge:0, SaveName:"ibflag",              KeyField:0, CalcLogic:"", Format:"", PointCount:0, UpdateEdit:1, InsertEdit:1 },
-        					    {Type:"Text",   Hidden:0, Width:60,  Align:"Center", ColMerge:0, SaveName:"intg_cd_id",          KeyField:1, CalcLogic:"", Format:"", PointCount:0, UpdateEdit:0, InsertEdit:0 },
-        					    {Type:"Text",   Hidden:0, Width:60,  Align:"Center", ColMerge:0, SaveName:"intg_cd_val_ctnt",    KeyField:1, CalcLogic:"", Format:"", PointCount:0, UpdateEdit:0, InsertEdit:1 },
-        					    {Type:"Text",   Hidden:0, Width:200, Align:"Center", ColMerge:0, SaveName:"intg_cd_val_dp_desc", KeyField:0, CalcLogic:"", Format:"", PointCount:0, UpdateEdit:1, InsertEdit:1 },
-        					    {Type:"Text",   Hidden:0, Width:600, Align:"Left",   ColMerge:0, SaveName:"intg_cd_val_desc",    KeyField:0, CalcLogic:"", Format:"", PointCount:0, UpdateEdit:1, InsertEdit:1 },
-        					    {Type:"Text",   Hidden:0, Width:50,  Align:"Center", ColMerge:0, SaveName:"intg_cd_val_dp_seq",  KeyField:0, CalcLogic:"", Format:"", PointCount:0, UpdateEdit:1, InsertEdit:1 } 
-        					];*/
-        		InitColumns(cols);
+        		       	
+        		InitColumns(cols);       		        		
         		resizeSheet(sheetNo);
         		SetSheetHeight(240);
+        		SetWaitImageVisible(0);
         	}
         	break;
         default:
@@ -225,7 +219,6 @@ function doActionIBSheet(sheetObj, formObj, sAction) {
 			case IBSEARCH:
 				ComOpenWait(true);
 				//sheetId = sheetObj.id;
-				//console.log(sheetId);
 				if(sheetObj.id === "sheet1"){
 					formObj.f_cmd.value = SEARCH;
 					//console.log("SEARCH " + FormQueryString(formObj));
@@ -235,7 +228,7 @@ function doActionIBSheet(sheetObj, formObj, sAction) {
 					//console.log("SEARCH01 " + FormQueryString(formObj));
 					DoSearch("DOU_TRN_0002GS.do", FormQueryString(formObj));
 				}				
-				ComOpenWait(false);
+				//ComOpenWait(false);
 				break;
 			case IBSAVE:				
 				ComOpenWait(true);
@@ -246,7 +239,7 @@ function doActionIBSheet(sheetObj, formObj, sAction) {
 					formObj.f_cmd.value = MULTI01;
 					DoSave("DOU_TRN_0002GS.do", FormQueryString(formObj));
 				}
-				ComOpenWait(false);//???
+				//ComOpenWait(false);
 				break;
 			default:
 				break;
@@ -281,10 +274,17 @@ function sheet1_OnDblClick(sheetObj, Row) {
 }
 
 /**
- * Turn off processing effect at the end of searching.
+ * Turn off processing effect at the end of searching. sheet1
  * 
  */
 function sheet1_OnSearchEnd(){
+	ComOpenWait(false);
+}
+
+/**
+ * Turn off processing effect at the end of searching. sheet2
+ */
+function sheet2_OnSearchEnd(){
 	ComOpenWait(false);
 }
 
@@ -336,13 +336,29 @@ function sheet1_OnChange(sheetObj, Row, Col) {
  * 
  * @param sheetObj
  * @param Row
- * @param Co
+ * @param Col
  */
-function sheet2_OnChagnge(sheetObj, Row, Col){
+/*function sheet2_OnChagnge(sheetObj, Row, Col){
 	if(sheetObjects[1].ColSaveName(Col) == "intg_cd_val_ctnt"){
 		checkDuplicate(sheetObj, Row);
 	}
+}*/
+
+/**
+ * Turn off processing effect at the end of saving. sheet1
+ */
+function sheet1_OnSaveEnd(){
+	ComOpenWait(false);
 }
+
+/**
+ * Turn off processing effect at the end of saving. sheet1
+ */
+function sheet2_OnSaveEnd(){
+	ComOpenWait(false);
+}
+
+
 
 
 
