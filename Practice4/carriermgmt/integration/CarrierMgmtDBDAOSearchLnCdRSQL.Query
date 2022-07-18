@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls>
+	<querys>
+		<query name="CarrierMgmtDBDAOSearchLnCdRSQL">
+			<desc><![CDATA[Searching LnCd]]></desc>
+			<sql><![CDATA[
+SELECT 
+	VSL_SLAN_CD AS RLANE_CD
+FROM MDM_REV_LANE
+WHERE	DELT_FLG = 'N'			]]></sql>
+			<params>
+			</params>
+		</query>
+	</querys>
+</sqls>
