@@ -59,7 +59,6 @@
 		crrCds = eventResponse.getETCData("crrCds");
 		lnCds  = eventResponse.getETCData("lnCds");
 		
-		
 	}catch(Exception e) {
 		out.println(e.toString());
 	}
@@ -79,13 +78,14 @@
 
 <form name="form">
 	<input type="hidden" name="f_cmd">
+	<input type="hidden" name="pagerows">
 		
 	<div class="page_title_area clear">
 		<div class="opus_design_btn">
 			<button type="button" class="btn_accent" name="btn_Retrieve" id="btn_Retrieve">Retrieve</button><!--
-			--><button type="button" class="btn_accent" name="btn_New" id="btn_New">New</button><!--
-			--><button type="button" class="btn_accent" name="btn_Save" id="btn_Save">Save</button><!--
-			--><button type="button" class="btn_accent" name="btn_DownExcel" id="btn_DownExcel">Down Excel</button>
+			--><button type="button" class="btn_normal" name="btn_New" id="btn_New">New</button><!--
+			--><button type="button" class="btn_normal" name="btn_Save" id="btn_Save">Save</button><!--
+			--><button type="button" class="btn_normal" name="btn_DownExcel" id="btn_DownExcel">Down Excel</button>
 		</div>
 	</div>
 
@@ -106,9 +106,9 @@
 
 						<th width="100">Create Date</th>
 						<td>
-							<input type="text" style="width:120px; text-align:center;" placeholder="YYYY-MM-DD" name="s_cre_dt_fr" id="s_cre_dt_fr" ><!--  
+							<input type="text" style="width:120px; text-align:center;" placeholder="YYYY-MM-DD" name="s_cre_dt_fr" id="s_cre_dt_fr" readonly><!--  
 							--><button type="button" class="calendar ir" name="btn_calendar_dt_fr" id="btn_calendar_dt_fr"></button> ~ 
-							<input type="text" style="width:120px; text-align:center;" placeholder="YYYY-MM-DD" name="s_cre_dt_to" id="s_cre_dt_to" ><!-- 
+							<input type="text" style="width:120px; text-align:center;" placeholder="YYYY-MM-DD" name="s_cre_dt_to" id="s_cre_dt_to" readonly><!-- 
 							--><button type="button" class="calendar ir" name="btn_calendar_dt_to" id="btn_calendar_dt_to"></button>
 						</td>
 					</tr>

@@ -84,9 +84,13 @@ public class Practice4SC extends ServiceCommandSupport {
 			else if (e.getFormCommand().isCommand(FormCommand.DEFAULT)) {
 				eventResponse = initCombo();
 			}
+			else if (e.getFormCommand().isCommand(FormCommand.SEARCH01)) {
+				eventResponse = searchCust(e);
+			}
 		}
 		return eventResponse;
 	}
+	
 	/**
 	 * PRACTICE_0004 : [이벤트]<br>
 	 * [비즈니스대상]을 [행위]합니다.<br>
@@ -177,6 +181,23 @@ public class Practice4SC extends ServiceCommandSupport {
 		}catch(Exception ex){
 			throw new EventException(new ErrorHandler(ex).getMessage(),ex);
 		}
+		return eventResponse;
+	}
+	
+	private EventResponse searchCust(Event e) throws EventException {
+		GeneralEventResponse eventResponse = new GeneralEventResponse();
+		Practice0004Event event = (Practice0004Event)e;
+		CarrierMgmtBC command = new CarrierMgmtBCImpl();
+		
+		try {
+			List<CarrierListVO> list = command.searchCust(event.getCarrierListVO());
+			eventResponse.setRsVoList(list);
+		} catch(EventException ex){
+			throw new EventException(new ErrorHandler(ex).getMessage(),ex);
+		} catch(Exception ex){
+			throw new EventException(new ErrorHandler(ex).getMessage(),ex);
+		}
+		
 		return eventResponse;
 	}
 }

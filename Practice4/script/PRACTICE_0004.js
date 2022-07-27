@@ -29,7 +29,7 @@ function setSheetObject(sheet_obj){
 }
 
 /**
- * Put combo objects in global variable "sheetObjects"<br>
+ * Put combo objects in global variable "comboObjects"<br>
  * 
  * @param combo_obj
  */
@@ -76,7 +76,7 @@ function initSheet(sheetObj, sheetNo) {
 	            var headers = [ { Text:HeadTitle, Align:"Center"} ];		
 	            InitHeaders(headers, info);
 				
-				var cols = [
+				/*var cols = [
 				            	{Type:"Status",   Hidden:1, Width:50, Align:"Center", SaveName:"ibflag"},
 				            	{Type:"DelCheck", Hidden:0, Width:50, Align:"Center", SaveName:"del_chk"},
 				            	{Type:"Text",     Hidden:0, Width:100, Align:"Center",  SaveName:"jo_crr_cd",     KeyField:1, UpdateEdit:1, InsertEdit:1, AcceptKeys:"E", InputCaseSensitive:1, EditLen:3},
@@ -90,7 +90,24 @@ function initSheet(sheetObj, sheetNo) {
 							    {Type:"Text", 	  Hidden:0, Width:200, Align:"Left",    SaveName:"cre_usr_id", 	  KeyField:0, UpdateEdit:0, InsertEdit:0}, 
 							    {Type:"Text", 	  Hidden:0, Width:200, Align:"Center",  SaveName:"upd_dt",     	  KeyField:0, UpdateEdit:0, InsertEdit:0}, 
 							    {Type:"Text", 	  Hidden:0, Width:200, Align:"Left",    SaveName:"upd_usr_id", 	  KeyField:0, UpdateEdit:0, InsertEdit:0}				            					       			            	
-				            ];
+				            ];*/
+	            
+	            var cols = [ 
+				            {Type:"Status",    Hidden:1, Width:50,  Align:"Center",  SaveName:"ibflag"}, 
+				            {Type:"DelCheck",  Hidden:0, Width:50,  Align:"Center",  SaveName:"del_chk"},
+					        {Type:"Popup", Hidden:0, Width:100, Align:"Center",  SaveName:"jo_crr_cd",     KeyField:1, UpdateEdit:0, InsertEdit:1, AcceptKeys:"E", InputCaseSensitive:1, EditLen:3},
+					        {Type:"Combo",     Hidden:0, Width:100, Align:"Center",  SaveName:"rlane_cd",      KeyField:1, UpdateEdit:0, InsertEdit:1, ComboCode:lnCds, ComboText: lnCds},
+					        {Type:"Popup", Hidden:0, Width:100, Align:"Center",  SaveName:"vndr_seq",      KeyField:1, UpdateEdit:1, InsertEdit:1, AcceptKeys:"N", EditLen:6},
+					        {Type:"Popup",     Hidden:0, Width:50,  Align:"Center",  SaveName:"cust_cnt_cd",   KeyField:1, UpdateEdit:1, InsertEdit:1, AcceptKeys:"E", InputCaseSensitive:1, EditLen:2}, 
+						    {Type:"Popup",     Hidden:0, Width:100, Align:"Center",  SaveName:"cust_seq",      KeyField:1, UpdateEdit:1, InsertEdit:1, AcceptKeys:"N", EditLen: 6}, 
+						    {Type:"Popup", Hidden:0, Width:100, Align:"Center",  SaveName:"trd_cd",        KeyField:0, UpdateEdit:1, InsertEdit:1, AcceptKeys:"E", InputCaseSensitive:1, EditLen:3},
+						    {Type:"Combo",     Hidden:0, Width:70,  Align:"Center",  SaveName:"delt_flg",      KeyField:0, UpdateEdit:1, InsertEdit:1, ComboCode:"N|Y",  ComboText:"N|Y"}, 
+						    {Type:"Text",      Hidden:0, Width:200, Align:"Center",  SaveName:"cre_dt",        KeyField:0, UpdateEdit:0, InsertEdit:0}, 
+						    {Type:"Text",      Hidden:0, Width:200, Align:"Left",    SaveName:"cre_usr_id",    KeyField:0, UpdateEdit:0, InsertEdit:0}, 
+						    {Type:"Text",      Hidden:0, Width:200, Align:"Center",  SaveName:"upd_dt",        KeyField:0, UpdateEdit:0, InsertEdit:0}, 
+						    {Type:"Text",      Hidden:0, Width:200, Align:"Left",    SaveName:"upd_usr_id",    KeyField:0, UpdateEdit:0, InsertEdit:0}
+					    ];
+	            
 				InitColumns(cols);
 				SetWaitImageVisible(0);
                 ComResizeSheet(sheetObjects[0]);
@@ -215,7 +232,7 @@ function getCellValue(sheetObj, colSaveName){
  * @param comboNo
  */
 function initCombo(comboObj, comboNo) {
-	comboObj.SetTitle("All"); //Set the text value that will be displayed on the title row.
+	comboObj.SetTitle("All"); //SetTitle : set the text value that will be displayed on the title row.
 	//Set whether the title row will be displayed or not.
 	//If set to true, the title row will be displayed on the first row of the drop down list.
 	comboObj.SetTitleVisible(true);
@@ -236,12 +253,15 @@ function initCombo(comboObj, comboNo) {
 function addComboItem(comboObj, comboItems) {
 	// split() splits a String into an array of substrings, and returns the array
 	// Obj.InsertItem(Index, Text, Code): add an item. Set the text value using a "|" separator when
-																		// using multicolumn.
+																		// using multi-column.
 	/*Index (Integer - Required): row index of the item to add.
-	Text  (String  - Required): text of the item to add.
-	Code  (String  - Optional): code of the item to add, if not entered, the Index value is converted
-	to a string and used as the code value.*/
+	 *Text  (String  - Required): text of the item to add.
+	 *Code  (String  - Optional): code of the item to add, if not entered, the Index value is converted
+	 *to a string and used as the code value.*/
+	
+	//console.log("comboItems "+ comboItems);
 	comboItems = comboItems.split("|");
+	//console.log("comboItems after split " + comboItems);
 	for(var i=0; i < comboItems.length; i++){
 		comboObj.InsertItem(i, comboItems[i], comboItems[i]);
 	}
@@ -269,34 +289,82 @@ function checkAllItem(comboObj) {
 }
 
 /**
- * Handle event click on popup item<br>
+ * Validate date<br>
  */
-/*function sheet1_OnPopupClick(sheetObj,Row, Col){
+function isValidDate() {
+	var from = new Date(document.form.s_cre_dt_fr.value);
+	var to = new Date(document.form.s_cre_dt_to.value);
+	return from < to;
+}
+
+/**
+ * Handle event click on popup item<br>
+ * Notice: maybe sDisplay parameter of ComOpenPopup is not as important as we think<br>
+ */
+function sheet1_OnPopupClick(sheetObj, Row, Col){
 	var colName = sheetObj.ColSaveName(Col);
 	switch(colName){
 		case "jo_crr_cd":
+			ComOpenPopup('/opuscntr/COM_ENS_0N1.do', 800, 500, 'setCrrCd', '1,0,0,1,1,1,1,1', true);
+			break;
+		case "cust_cnt_cd":
+		case "cust_seq":
+			ComOpenPopup('/opuscntr/CUS_POPUP.do', 800, 500, 'setCustCd', '1,0,1,1,1,1', true);
+			break;
+		case "vndr_seq":
+			ComOpenPopup('/opuscntr/COM_COM_0007.do', 900, 520, 'setVndrCd', '1,0,1', true, false);
+			break;
+		case "trd_cd":
 			ComOpenPopup('/opuscntr/COM_COM_0012.do', 800, 500, 'setTrdCd', '1,0,0,1,1,1,1,1', true);
 			break;
 	}
-}*/
+}
 
 /**
- * Retrieve data from popup window<br>
+ * Retrieve customer code from pop-up window<br>
  * 
  * @param aryPopupData
  */
-/*function setTrdCd(aryPopupData){
-	console.log(aryPopupData[0]);
+function setCustCd(aryPopupData){
+	sheetObjects[0].SetCellValue(sheetObjects[0].GetSelectRow(), "cust_cnt_cd", aryPopupData[0][2]);
+	sheetObjects[0].SetCellValue(sheetObjects[0].GetSelectRow(), "cust_seq",    aryPopupData[0][3]);
+}
+
+/**
+ * Retrieve carrier code from pop-up window<br>
+ * When user click OK on pop-up window, this function is fired<br>
+ * 
+ * @param aryPopupData
+ */
+function setCrrCd(aryPopupData, row, col, sheetId){
+	/*console.log("type "+ typeof(aryPopupData));
+	console.log("aryPopupData Carrier code "+ aryPopupData);
+	console.log("row "+ row);
+	console.log("col "+ col);
+	console.log("sheetId "+ sheetId);
+	console.log(" data " + aryPopupData[0][3]);*/
+	
+	sheetObjects[0].SetCellValue(sheetObjects[0].GetSelectRow(), "jo_crr_cd", aryPopupData[0][3], 0);
+}
+
+/**
+ * Retrieve vendor code from pop-up window<br>
+ * 
+ * @param aryPopupData
+ */
+function setVndrCd(aryPopupData){
+	sheetObjects[0].SetCellValue(sheetObjects[0].GetSelectRow(), "vndr_seq", aryPopupData[0][2],0);
+}
+
+/**
+ * Retrieve trade code from pop-up window<br>
+ * 
+ * @param aryPopupData
+ */
+function setTrdCd(aryPopupData){
 	sheetObjects[0].SetCellValue(sheetObjects[0].GetSelectRow(), "trd_cd", aryPopupData[0][3]);
-}*/
+}
 
 
 
-
-
-
-
-
-
-    
-   	
+ 	

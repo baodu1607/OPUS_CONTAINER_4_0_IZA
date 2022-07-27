@@ -327,4 +327,35 @@ public class CarrierMgmtDBDAO extends DBDAOSupport {
 		return list;
 	}
 	
+	public List<CarrierListVO> searchCust(CarrierListVO carrierListVO) throws DAOException {
+		DBRowSet dbRowset = null;
+		List<CarrierListVO> list = null;
+		
+		Map<String, Object> param = new HashMap<String, Object>();
+		Map<String, Object> velParam = new HashMap<String, Object>();
+		
+		try{
+			if(carrierListVO != null){
+				Map<String, String> mapVO = carrierListVO .getColumnValues();
+				
+				param.putAll(mapVO);
+				velParam.putAll(mapVO);
+			}
+			//Query
+			dbRowset = new SQLExecuter("").executeQuery((ISQLTemplate)new CarrierMgmtDBDAOSearchCustRSQL(), param, velParam);
+			//Convert dbRowset to list
+			list = (List)RowSetUtil.rowSetToVOs(dbRowset, CarrierListVO.class);
+		} catch(SQLException se) {
+			//Logging exception
+			log.error(se.getMessage(),se);
+			//throw new Exception
+			throw new DAOException(new ErrorHandler(se).getMessage());
+		} catch(Exception ex) {
+			log.error(ex.getMessage(),ex);
+			throw new DAOException(new ErrorHandler(ex).getMessage());
+		}
+		
+		return list;
+	}
+	
 }

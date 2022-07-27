@@ -141,5 +141,17 @@ public class CarrierMgmtBCImpl extends BasicCommandSupport implements CarrierMgm
 			throw new EventException(new ErrorHandler(ex).getMessage(),ex);
 		}
 	}
+
+	@Override
+	public List<CarrierListVO> searchCust(CarrierListVO carrierListVO)
+			throws EventException {
+		try {
+			return dbDao.searchCust(carrierListVO);
+		} catch(DAOException ex) {
+			throw new EventException(new ErrorHandler(ex).getMessage(),ex);
+		} catch (Exception ex) {
+			throw new EventException(new ErrorHandler(ex).getMessage(),ex);
+		}
+	}
 	
 }

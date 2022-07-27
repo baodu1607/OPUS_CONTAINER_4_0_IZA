@@ -64,6 +64,12 @@ public class PRACTICE_0004HTMLAction extends HTMLActionSupport {
 			carrierListVO.setCreDtTo(JSPUtil.getParameter(request, "s_cre_dt_to", ""));
 			
 			event.setCarrierListVO(carrierListVO);
+		}else if(command.isCommand(FormCommand.SEARCH01)) {
+			CarrierListVO carrierListVO = new CarrierListVO();
+			carrierListVO.setCustCntCd(JSPUtil.getParameter(request, "s_cust_cnt_cd",""));
+			carrierListVO.setCustSeq(JSPUtil.getParameter(request, "s_cust_seq",""));
+			
+			event.setCarrierListVO(carrierListVO);
 		}
 
 		return  event;

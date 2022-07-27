@@ -61,7 +61,14 @@ public interface CarrierMgmtBC {
 	 */
 	public List<CarrierListVO> getLnCds() throws EventException;
 	
-	
+	/**
+	 * Searching for customer pop-up<br>
+	 * 
+	 * @param carrierListVO
+	 * @return List<CarrierVO>
+	 * @throws EventException
+	 */
+	public List<CarrierListVO> searchCust(CarrierListVO carrierListVO) throws EventException;
 	
 	
 	

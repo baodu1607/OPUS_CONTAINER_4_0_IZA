@@ -109,7 +109,7 @@ public class CarrierListVO extends AbstractValueObject {
 	}
 	
 	/**
-	 * 테이블 컬럼에 저장할 값을 Hashtable<"column_name", "value"> 로 반환
+	 * Value to store in table column Hashtable<"column_name", "value"> 로 반환
 	 * @return HashMap
 	 */
 	public HashMap<String, String> getColumnValues(){
