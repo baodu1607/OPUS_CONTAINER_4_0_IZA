@@ -1,3 +1,15 @@
+/*=========================================================
+*Copyright(c) 2022 CyberLogitec
+*@FileName : MoneyMgmtBCImpl.java
+*@FileTitle : Money Management
+*Open Issues :
+*Change history :
+*@LastModifyDate : 2022.07.25
+*@LastModifier : 
+*@LastVersion : 1.0
+* 2022.07.19 
+* 1.0 Creation
+=========================================================*/
 package com.clt.apps.opus.esm.clv.practice3.moneymgmt.basic;
 
 import java.util.List;
@@ -11,6 +23,13 @@ import com.clt.framework.core.layer.event.EventException;
 import com.clt.framework.core.layer.integration.DAOException;
 import com.clt.framework.support.layer.basic.BasicCommandSupport;
 
+/**
+ * ALPS-moneymgmt Business Logic Command Interface<br>
+ * - Interface to business logic for ALPS-moneymgmt<br>
+ *
+ * @author BaoDu
+ * @since J2EE 1.6
+ */
 public class MoneyMgmtBCImpl extends BasicCommandSupport implements MoneyMgmtBC {
 	
 	private transient MoneyMgmtDBDAO dbDao = null;
@@ -20,7 +39,7 @@ public class MoneyMgmtBCImpl extends BasicCommandSupport implements MoneyMgmtBC 
 	}
 
 	/**
-	 * Getting data for Partner combo box<br>
+	 * Getting data for Partner combo-box<br>
 	 * 
 	 * @return List<SummaryVO>
 	 * @exception EventException
@@ -37,7 +56,7 @@ public class MoneyMgmtBCImpl extends BasicCommandSupport implements MoneyMgmtBC 
 	}
 
 	/**
-	 * Getting data for Lane combo box<br>
+	 * Getting data for Lane combo-box<br>
 	 * 
 	 * @param summaryVO
 	 * @return List<SummaryVO>
@@ -55,6 +74,13 @@ public class MoneyMgmtBCImpl extends BasicCommandSupport implements MoneyMgmtBC 
 		}
 	}
 
+	/**
+	 * Getting data for Trade combo-box<br>
+	 * 
+	 * @param summaryVO
+	 * @return List<SummaryVO>
+	 * @throws EventException
+	 */
 	@Override
 	public List<SummaryVO> getTradeCodes(SummaryVO summaryVO)
 			throws EventException {
@@ -67,6 +93,13 @@ public class MoneyMgmtBCImpl extends BasicCommandSupport implements MoneyMgmtBC 
 		}
 	}
 	
+	/**
+	 * Searching Summary data<br>
+	 * 
+	 * @param SummaryVO summaryVO
+	 * @return List<SummaryVO>
+	 * @exception EventException
+	 */
 	public List<SummaryVO> searchSummaryVO(ConditionVO conditionVO) throws EventException {
 		try {
 			return dbDao.searchSummaryVO(conditionVO);
@@ -77,6 +110,12 @@ public class MoneyMgmtBCImpl extends BasicCommandSupport implements MoneyMgmtBC 
 		}
 	}
 
+	/**
+	 * Searching Detail data<br>
+	 * @param detailVO
+	 * @return List<DetailVO>
+	 * @throws EventException
+	 */
 	@Override
 	public List<DetailVO> searchDetailVO(ConditionVO conditionVO)
 			throws EventException {

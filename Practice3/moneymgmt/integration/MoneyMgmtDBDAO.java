@@ -1,3 +1,15 @@
+/*=========================================================
+*Copyright(c) 2022 CyberLogitec
+*@FileName : MoneyMgmtDBDAO.java
+*@FileTitle : Money Management
+*Open Issues :
+*Change history :
+*@LastModifyDate : 2022.07.25
+*@LastModifier : 
+*@LastVersion : 1.0
+* 2022.07.19 
+* 1.0 Creation
+=========================================================*/
 package com.clt.apps.opus.esm.clv.practice3.moneymgmt.integration;
 
 import java.sql.SQLException;
@@ -19,8 +31,21 @@ import com.clt.framework.support.db.RowSetUtil;
 import com.clt.framework.support.db.SQLExecuter;
 import com.clt.framework.support.layer.integration.DBDAOSupport;
 
+/**
+ * ALPS MoneyMgmtDBDAO <br>
+ * -JDBC operation to process ALPS-MoneyMgmt system Business Logic.<br>
+ * 
+ * @author BaoDu
+ * @see MoneyMgmtBCImpl 참조
+ * @since J2EE 1.6
+ */
 public class MoneyMgmtDBDAO extends DBDAOSupport{
 	
+	/**
+	 * Getting data for Partner combo box
+	 * @return List<SummaryVO>
+	 * @throws DAOException
+	 */
 	@SuppressWarnings("unchecked")
 	public List<SummaryVO> getPartnerCodes() throws DAOException {
 		DBRowSet dbRowset = null;
@@ -41,6 +66,11 @@ public class MoneyMgmtDBDAO extends DBDAOSupport{
 		return list;
 	}
 	
+	/**
+	 * Getting data for Lane combo box<br>
+	 * @return List<SummaryVO>
+	 * @throws DAOException
+	 */
 	@SuppressWarnings("unchecked")
 	public List<SummaryVO> getLaneCodes(SummaryVO summaryVO) throws DAOException {
 		DBRowSet dbRowset = null;
@@ -78,6 +108,11 @@ public class MoneyMgmtDBDAO extends DBDAOSupport{
 		return list;
 	}
 	
+	/**
+	 * Getting data for Trade combo box
+	 * @return List<SummaryVO>
+	 * @throws DAOException
+	 */
 	@SuppressWarnings("unchecked")
 	public List<SummaryVO> getTradeCodes(SummaryVO summaryVO) throws DAOException {
 		DBRowSet dbRowset = null;
@@ -156,6 +191,12 @@ public class MoneyMgmtDBDAO extends DBDAOSupport{
 		return list;
 	}*/
 	
+	/**
+	 * Searching Summary data<br>
+	 * @param conditionVO
+	 * @return List<SummaryVO>
+	 * @throws DAOException
+	 */
 	@SuppressWarnings("unchecked")
 	public List<SummaryVO> searchSummaryVO(ConditionVO conditionVO) throws DAOException {
 		DBRowSet dbRowset = null;
@@ -195,6 +236,12 @@ public class MoneyMgmtDBDAO extends DBDAOSupport{
 		return list;
 	}
 	
+	/**
+	 * Searching Detail data<br>
+	 * @param detailVO
+	 * @return List<DetailVO>
+	 * @throws DAOException
+	 */
 	@SuppressWarnings("unchecked")
 	public List<DetailVO> searchDetailVO(ConditionVO conditionVO) throws DAOException {
 		DBRowSet dbRowset = null;

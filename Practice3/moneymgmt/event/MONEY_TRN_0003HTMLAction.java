@@ -1,3 +1,16 @@
+/*=========================================================
+*Copyright(c) 2022 CyberLogitec
+*@FileName : MONEY_TRN_0003HTMLAction.java
+*@FileTitle : Money Management
+*Open Issues :
+*Change history :
+*@LastModifyDate : 2022.07.24
+*@LastModifier : BaoDu
+*@LastVersion : 1.0
+* 2022.07.19 
+* 1.0 Creation
+=========================================================*/
+
 package com.clt.apps.opus.esm.clv.practice3.moneymgmt.event;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,13 +24,29 @@ import com.clt.framework.core.layer.event.EventResponse;
 import com.clt.framework.support.controller.HTMLActionSupport;
 import com.clt.framework.support.controller.html.FormCommand;
 
-
+/**
+ * HTTP Parser<br>
+ * - Parsing the value of the HTML DOM object sent to the server through the com.clt.apps.opus.esm.clv.doutraining.moneymgmt screen as a Java variable<br>
+ * - Parsing information is converted into an event, put in a request, and requested to be executed by MoneyMgmtSC<br>
+ * - EventResponse that transmits execution result from MoneyMgmtSC to View (JSP) is set in the request<br>
+ * 
+ * @author BaoDu
+ * @see MoneyTrn0003Event 참조
+ * @since J2EE 1.6
+ */
 public class MONEY_TRN_0003HTMLAction extends HTMLActionSupport{
 	private static final long serialVersionUID = 1L;
 	
 	public MONEY_TRN_0003HTMLAction() {}
 	
-	
+	/**
+	 * Parsing the HTLM DOM object's value as a Java variable<br>
+	 * Parsing teh information of HttpRequest as MoneyTrn0003Event and setting it in the request<br>
+	 * 
+	 * @param request HttpServletRequest HttpRequest
+	 * @return Event Event object that implements the interface
+	 * @exception HTMLActionException
+	 */
 	public Event perform(HttpServletRequest request) throws HTMLActionException {
 		FormCommand command = FormCommand.fromRequest(request);
 		MoneyTrn0003Event event = new MoneyTrn0003Event();

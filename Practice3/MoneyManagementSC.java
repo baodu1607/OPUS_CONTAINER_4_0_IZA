@@ -1,3 +1,15 @@
+/*=========================================================
+*Copyright(c) 2022 CyberLogitec
+*@FileName : MoneyMgmtSC.java
+*@FileTitle : Money Management
+*Open Issues :
+*Change history :
+*@LastModifyDate : 2022.07.25
+*@LastModifier : 
+*@LastVersion : 1.0
+* 2022.07.19
+* 1.0 Creation
+=========================================================*/
 package com.clt.apps.opus.esm.clv.practice3;
 
 import java.util.List;
@@ -16,10 +28,21 @@ import com.clt.framework.support.controller.html.FormCommand;
 import com.clt.framework.support.layer.service.ServiceCommandSupport;
 import com.clt.framework.support.view.signon.SignOnUserAccount;
 
+/**
+ * ALPS-MoneyMgmt Business Logic ServiceCommand - Process business transaction for ALPS-MoneyMgmt.
+ * 
+ * @author BaoDu
+ * @see MoneyMgmtDBDAO
+ * @since J2EE 1.6
+ */
 public class MoneyManagementSC extends ServiceCommandSupport{
 	
 	private SignOnUserAccount account = null;
 	
+	/**
+	 * MoneyMgmt system task scenario precedent work<br>
+	 * Creating related internal objects when calling a business scenario<br>
+	 */
 	public void doStart() {
 		log.debug("MoneymgmtSC 시작");
 		try {
@@ -30,10 +53,22 @@ public class MoneyManagementSC extends ServiceCommandSupport{
 		}
 	}
 	
+	/**
+	 * MoneyMgmt system work scenario finishing work<br>
+	 * Release related internal objects when the work scenario is finished<br>
+	 */
 	public void doEnd() {
 		log.debug("MoneymgmtSC 종료");
 	}
 	
+	/**
+	 * Carry out business scenarios for each event<br>
+	 * Branch processing of all events occurring in ALPS-MoneyMgmt system work<br>
+	 * 
+	 * @param e Event
+	 * @return EventResponse
+	 * @exception EventException
+	 */
 	public EventResponse perform(Event e) throws EventException {
 		EventResponse eventResponse = null;
 		
@@ -54,6 +89,14 @@ public class MoneyManagementSC extends ServiceCommandSupport{
 		return eventResponse;
 	}
 	
+	/**
+	 * ESM_DOU_0108 : [Event]<br>
+	 * [Act] for [Business Target].<br>
+	 * This method is used for searching Detail data  
+	 * @param Event e
+	 * @return EventResponse
+	 * @exception EventException
+	 */
 	private EventResponse searchDetailVO(Event e) throws EventException {
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
 		MoneyTrn0003Event event = (MoneyTrn0003Event)e;
@@ -71,6 +114,14 @@ public class MoneyManagementSC extends ServiceCommandSupport{
 		return eventResponse;
 	}
 
+	/**
+	 * ESM_DOU_0108 : [Event]<br>
+	 * [Act] for [Business Target].<br>
+	 * This method is used for searching Summary data  
+	 * @param Event e
+	 * @return EventResponse
+	 * @exception EventException
+	 */
 	private EventResponse searchSummaryVO(Event e) throws EventException {
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
 		MoneyTrn0003Event event = (MoneyTrn0003Event)e;
@@ -87,7 +138,13 @@ public class MoneyManagementSC extends ServiceCommandSupport{
 		
 		return eventResponse;
 	}
-		
+	
+	/**
+	 * Searching data for trade combo box<br>
+	 * @param e
+	 * @return eventReponse
+	 * @throws EventException
+	 */
 	private EventResponse searchTradeCodes(Event e) throws EventException{
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
 		MoneyTrn0003Event event = (MoneyTrn0003Event)e;
@@ -114,6 +171,13 @@ public class MoneyManagementSC extends ServiceCommandSupport{
 		return eventResponse;
 	}
 
+	/**
+	 * Searching data for lane combo box<br>
+	 * 
+	 * @param e
+	 * @return eventResponse
+	 * @throws EventException
+	 */
 	private EventResponse searchLaneCodes(Event e) throws EventException {
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
 		MoneyTrn0003Event event = (MoneyTrn0003Event) e;
@@ -140,6 +204,12 @@ public class MoneyManagementSC extends ServiceCommandSupport{
 		return eventResponse;
 	}
 
+	/**
+	 * Initializing data for partner combo box <br>
+	 * 
+	 * @return eventResponse
+	 * @throws EventException
+	 */
 	private EventResponse initCombo() throws EventException {
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
 		MoneyMgmtBC command = new MoneyMgmtBCImpl();

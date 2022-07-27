@@ -1,3 +1,15 @@
+/*=========================================================
+*Copyright(c) 2022 CyberLogitec
+*@FileName : MoneyMgmtBC.java
+*@FileTitle : Money Management
+*Open Issues :
+*Change history :
+*@LastModifyDate : 2022.07.25
+*@LastModifier : 
+*@LastVersion : 1.0
+* 2022.07.19
+* 1.0 Creation
+=========================================================*/
 package com.clt.apps.opus.esm.clv.practice3.moneymgmt.basic;
 
 import java.util.List;
@@ -7,6 +19,13 @@ import com.clt.apps.opus.esm.clv.practice3.moneymgmt.vo.DetailVO;
 import com.clt.apps.opus.esm.clv.practice3.moneymgmt.vo.SummaryVO;
 import com.clt.framework.core.layer.event.EventException;
 
+/**
+ * ALPS-Moneymgmt Business Logic Command Interface<br>
+ * - Interface to business logic for ALPS-Moneymgmt<br>
+ *
+ * @author BaoDu
+ * @since J2EE 1.6
+ */
 public interface MoneyMgmtBC {
 	/**
 	 * Getting data for Partner combo box<br>
