@@ -152,45 +152,6 @@ public class MoneyMgmtDBDAO extends DBDAOSupport{
 		return list;
 	}
 	
-	/*@SuppressWarnings("unchecked")
-	public List<SummaryVO> searchSummaryVO(SummaryVO summaryVO) throws DAOException {
-		DBRowSet dbRowset = null;
-		List<SummaryVO> list = null;
-		
-		Map<String, Object> param = new HashMap<String, Object>();
-		Map<String, Object> velParam = new HashMap<String, Object>();
-		
-		List<String> partnerCodes=new ArrayList<String>();
-		
-		try {
-			if(summaryVO != null) {
-				Map<String, String> mapVO = summaryVO.getColumnValues();
-				
-				if("All".equalsIgnoreCase(summaryVO.getJoCrrCd())==false){
-					partnerCodes=Arrays.asList(summaryVO.getJoCrrCd().split(","));
-				}
-				
-				param.put("partnerCodes",partnerCodes);
-				param.putAll(mapVO);
-				
-				velParam.put("partnerCodes",partnerCodes);
-				velParam.putAll(mapVO);
-			}
-			
-			dbRowset = new SQLExecuter("").executeQuery((ISQLTemplate)new MoneyMgmtDBDAOSummaryVORSQL(), param, velParam);
-			list = (List)RowSetUtil.rowSetToVOs(dbRowset, SummaryVO .class);
-			
-		} catch(SQLException se) {
-			log.error(se.getMessage(),se);
-			throw new DAOException(new ErrorHandler(se).getMessage());
-		} catch(Exception ex) {
-			log.error(ex.getMessage(),ex);
-			throw new DAOException(new ErrorHandler(ex).getMessage());
-		}
-		
-		return list;
-	}*/
-	
 	/**
 	 * Searching Summary data<br>
 	 * @param conditionVO

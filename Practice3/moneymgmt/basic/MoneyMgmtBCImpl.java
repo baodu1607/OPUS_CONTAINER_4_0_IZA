@@ -34,6 +34,10 @@ public class MoneyMgmtBCImpl extends BasicCommandSupport implements MoneyMgmtBC 
 	
 	private transient MoneyMgmtDBDAO dbDao = null;
 	
+	/**
+	 * MoneyMgmtBCImpl creating object<br>
+	 * MoneyMgmtDBDAO Generates.<br>
+	 */
 	public MoneyMgmtBCImpl() {
 		dbDao = new MoneyMgmtDBDAO();
 	}
@@ -127,7 +131,5 @@ public class MoneyMgmtBCImpl extends BasicCommandSupport implements MoneyMgmtBC 
 			throw new EventException(new ErrorHandler(ex).getMessage(),ex);
 		}
 	}
-	
-
 	
 }

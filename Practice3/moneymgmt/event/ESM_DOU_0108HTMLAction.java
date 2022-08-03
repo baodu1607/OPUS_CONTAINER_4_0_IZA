@@ -31,13 +31,16 @@ import com.clt.framework.support.controller.html.FormCommand;
  * - EventResponse that transmits execution result from MoneyMgmtSC to View (JSP) is set in the request<br>
  * 
  * @author BaoDu
- * @see MoneyTrn0003Event 참조
+ * @see EsmDou0108Event 참조
  * @since J2EE 1.6
  */
-public class MONEY_TRN_0003HTMLAction extends HTMLActionSupport{
+public class ESM_DOU_0108HTMLAction extends HTMLActionSupport{
 	private static final long serialVersionUID = 1L;
 	
-	public MONEY_TRN_0003HTMLAction() {}
+	/**
+	 * ESM_DOU_0108HTMLAction generation
+	 */
+	public ESM_DOU_0108HTMLAction() {}
 	
 	/**
 	 * Parsing the HTLM DOM object's value as a Java variable<br>
@@ -49,7 +52,7 @@ public class MONEY_TRN_0003HTMLAction extends HTMLActionSupport{
 	 */
 	public Event perform(HttpServletRequest request) throws HTMLActionException {
 		FormCommand command = FormCommand.fromRequest(request);
-		MoneyTrn0003Event event = new MoneyTrn0003Event();
+		EsmDou0108Event event = new EsmDou0108Event();
 		
 		if(command.isCommand(FormCommand.SEARCH02)) {
 			SummaryVO summaryVO = new SummaryVO();

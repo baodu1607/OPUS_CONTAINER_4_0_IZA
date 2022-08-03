@@ -23,38 +23,68 @@ import com.clt.framework.support.layer.event.EventSupport;
  * - Used as PDTO delivered to ServiceCommand Layer<br>
  *
  * @author BaoDu
- * @see MONEY_TRN_0003HTMLAction refer
+ * @see ESM_DOU_0108HTMLAction refer
  * @since J2EE 1.6
  */
-public class MoneyTrn0003Event extends EventSupport {
+public class EsmDou0108Event extends EventSupport {
 	private static final long serialVersionUID = 1L;
 	
 	SummaryVO summaryVO = null;
 	DetailVO detailVO = null;
 	ConditionVO conditionVO = null;
 	
-	public MoneyTrn0003Event() {}
+	/**
+	 * EsmDou0108Event generation
+	 */
+	public EsmDou0108Event() {}
 	
+	/**
+	 * Set condition VO
+	 * 
+	 * @param conditionVO
+	 */
 	public void setConditionVO(ConditionVO conditionVO) {
 		this.conditionVO = conditionVO;
 	}
 	
+	/**
+	 * Set summary
+	 * 
+	 * @param summaryVO
+	 */
 	public void setSummaryVO(SummaryVO summaryVO){
 		this.summaryVO = summaryVO;
 	}
-
+	
+	/**
+	 * Set detail 
+	 * 
+	 * @param detailVO
+	 */
 	public void setDetailVO(DetailVO detailVO) {
 		this.detailVO = detailVO;
 	}
 	
+	/**
+	 * Get condition VO
+	 * @return ConditionVO
+	 */
 	public ConditionVO getConditionVO() {
 		return conditionVO;
 	}
 	
+	/**
+	 * Get summary VO
+	 * @return SummaryVO
+	 */
 	public SummaryVO getSummaryVO(){
 		return summaryVO;
 	}
 
+	/**
+	 * Get detail VO
+	 * @return DetailVO
+	 */
 	public DetailVO getDetailVO() {
 		return detailVO;
 	}

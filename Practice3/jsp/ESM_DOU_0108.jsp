@@ -1,3 +1,18 @@
+<%
+/*=========================================================
+*Copyright(c) 2022 CyberLogitec
+*@FileName : ESM_DOU_0108.jsp
+*@FileTitle : 
+*Open Issues :
+*Change history :
+*@LastModifyDate : 2022.07.21
+*@LastModifier :
+*@LastVersion : 1.0
+* 2022.07.14
+* 1.0 Creation
+=========================================================*/
+%>
+
 <%@ page contentType="text/html; charset=UTF-8"%>
 <%@ page import="com.clt.framework.component.util.JSPUtil"%>
 <%@ page import="com.clt.framework.component.util.DateTime"%>
@@ -5,11 +20,11 @@
 <%@ page import="com.clt.framework.core.layer.event.GeneralEventResponse"%>
 <%@ page import="com.clt.framework.support.controller.html.CommonWebKeys"%>
 <%@ page import="com.clt.framework.support.view.signon.SignOnUserAccount"%>
-<%@ page import="com.clt.apps.opus.esm.clv.practice3.moneymgmt.event.MoneyTrn0003Event"%>
+<%@ page import="com.clt.apps.opus.esm.clv.practice3.moneymgmt.event.EsmDou0108Event"%>
 <%@ page import="org.apache.log4j.Logger" %>
 
 <%
-	MoneyTrn0003Event  event = null;			//PDTO(Data Transfer Object including Parameters)
+	EsmDou0108Event  event = null;			//PDTO(Data Transfer Object including Parameters)
 	Exception serverException   = null;			//서버에서 발생한 에러
 	String strErrMsg = "";						//에러메세지
 	int rowCount	 = 0;						//DB ResultSet 리스트의 건수
@@ -31,7 +46,7 @@
 		strUsr_nm = account.getUsr_nm();
 
 
-		event = (MoneyTrn0003Event)request.getAttribute("Event");
+		event = (EsmDou0108Event)request.getAttribute("Event");
 		serverException = (Exception)request.getAttribute(CommonWebKeys.EXCEPTION_OBJECT);
 		
 		if (serverException != null) {
@@ -64,9 +79,10 @@
 	
 	<!-- page_title_area(S) -->
 	<div class="page_title_area clear">
-		<!-- page_title(S) -->
+		<!-- page_title_area(S) -->
 		<h2 class="page_title"><button type="button"><span id="title">Money Management</span></button></h2>
-		<!-- page_title(E) -->
+		<!-- page_title_area(E) -->
+		
 		<!-- opus_design_btn(S) -->
 		<div class="opus_design_btn"><!-- 
 		--><button type="button" class="btn_accent" name="btn_Retrieve" id="btn_Retrieve">Retrieve</button><!-- 
@@ -75,6 +91,7 @@
 		--><button type="button" class="btn_normal" name="btn_DownExcel2" id="btn_DownExcel2">DownExcel2</button>
 		</div>
 		<!-- opus_design_btn(E) -->
+		
 		<!-- page_location(S) -->
 		<div class="location">
 			<span id="navigation"></span>
@@ -83,7 +100,7 @@
 	</div>
 	<!-- page_title_area(E) -->
 	
-	<!-- wrap_search(S) -->
+	<!-- wrap_search_tab(S) -->
 	<div class="wrap_search_tab">
 		<!-- opus_design_inquiry(S) -->
 		<div class="opus_design_inquiry wFit">
@@ -99,7 +116,7 @@
 						<col width="55px">
 						<col width="*" />
 					</colgroup>
-					<tr class="h23">
+					<tr>
 						<th>Year Month</th>
 						<td><input type="text" style="width: 100px;" class="input1" value="" name="s_date_fr" id="s_date_fr" readonly><!--
 							--><button type="button" class="btn_left" name="btn_date_fr_down" id="btn_date_fr_down"></button><!--
@@ -126,13 +143,16 @@
 		</div>
 		<!-- opus_design_inquiry(E) -->
 	</div>
-	<!-- wrap_search(E) -->
+	<!-- wrap_search_tab(E) -->
 	
 	<!-- wrap_result(S) -->
 	<div class="wrap_result">
+		<!-- opus_design_tab(S) -->
 	    <div class="opus_design_tab sm">
 	        <script type="text/javascript">ComTabObject('tab1')</script>
 	    </div>
+	    <!-- opus_design_tab(E) -->
+	    
 	    <!-- opus_design_grid(S) -->
 	    <div class="opus_design_grid  clear" name="tabLayer" id="tabLayer">
 	        <script language="javascript">ComSheetObject('sheet1');</script>

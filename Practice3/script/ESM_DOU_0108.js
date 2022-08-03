@@ -1,34 +1,15 @@
-/*
- * Partner code: + table name : JOO_INVOICE 
- * 				 + column name: JO_CRR_CD 
- * 				 + Data is got from JOO_CARRIER.JO_CRR_CD
- * Lane: + Only show data when user selects partner
- * 		 + Data is got from JOO_CARRIER.RLANE_CD where JO_CRR_CD = @Partner
- * Trade: + Only show data when user selects partner & Lane 
- * 		  + Data is got from JOO_CARRIER.TRD_CD where JO_CRR_CD = @Partner and RLANE_CD = @Lane
- */
-
-/*
- * EVENT SPECIFICATION.
- * - (Screen) OnLoad : + Pre:  System retrieves all Partner data.
- * 					   + Post: System sets default month for Year Month. (@Year Month FM : previous month, @Year Month TO: current month)
- * - (Down Excel) OnClick : + If there is no data in grid, then show error message [No_data], then return. 
- *							+ Grid data download to excel file.
- * - (Year Month) OnChange : + Clear data on Grid of Summary & Details tab.
- * - (Summary / Details) OnChange: If user change tab, system will check user behaviors:
- * 					+ If user retrieved data before change tab then system automatically retrieve data for selected tab.
- * 					+  If the selected tab already has had data, then no need to retrieve data again for selected tab.
- * - (Summary Tab) OnDoubleClick :  + If user double click on 1 Invoice, then system automatically change to detail tab and
- * 									 select to the right row for user checking.
- * 									+ If the Details tab has no data before, then system has to retrieve data first.
- * - (Retrieve) OnClick: + System checks Year Month condition: If year month over 3 months, 
- * 						  then system show confirm message "Year Month over 3 months, do you really want to get data?"
- * 								* If user clicks okay, then system keep going next step and 
- * 								 will not show this message any more even user clicks retrieve again.
- * 								* if user clicks cancel, then return and this message will be shown
- * 								 if user selects year month over 3 months again.
- * 						 + System retrieves data with the selected option value and populate them into @Grid.
- */
+/*=========================================================
+*Copyright(c) 2022 CyberLogitec
+*@FileName : ESM_DOU_0108.js
+*@FileTitle : Money Management
+*Open Issues :
+*Change history :
+*@LastModifyDate : 2022.07.21
+*@LastModifier : 
+*@LastVersion : 1.0
+* 2022.06.07 
+* 1.0 Creation
+=========================================================*/
 
 var sheetObjects = new Array();
 var sheetCnt = 0;
@@ -184,8 +165,6 @@ function processButtonClick() {
 		var srcName = ComGetEvent("name");
 		switch(srcName) {
 			case "btn_Retrieve":
-				console.log("checkOver3M " + checkOver3M);
-				console.log("checkOverThreeMonth "+checkOverThreeMonth());
 				if(!checkOver3M && checkOverThreeMonth()){
 				
 					if(ComShowCodeConfirm('ESM0002')) {
@@ -232,7 +211,7 @@ function processButtonClick() {
                 break;
                 
             case "btn_DownExcel2":
-                doActionIBSheet(sheetObject1, formObject, IBDOWNEXCEL2);
+            	ComShowCodeConfirm('ESM0003');
                 break;
 		}
 		
@@ -266,12 +245,12 @@ function doActionIBSheet(sheetObj, formObj, sAction) {
 					searchDetail = getCurrentSearchOption();
 				}
 				
-				var xml = sheetObj.GetSearchData("MoneyMgmtGS.do", FormQueryString(formObj));
-				sheetObj.LoadSearchData(xml, {abc: 1});
+				var xml = sheetObj.GetSearchData("ESM_DOU_0108GS.do", FormQueryString(formObj));
+				sheetObj.LoadSearchData(xml, {Sync: 1});
 			} else {
 				searchDetail = searchSummary;
-				var xml = sheetObj.GetSearchData("MoneyMgmtGS.do", searchForDbl);
-				sheetObj.LoadSearchData(xml, {abc: 1});
+				var xml = sheetObj.GetSearchData("ESM_DOU_0108GS.do", searchForDbl);
+				sheetObj.LoadSearchData(xml, {Sync: 1});
 			}
 			
 			break;
@@ -358,11 +337,13 @@ function loadPage() {
 function initCalendar() {
 	var formObj = document.form;
 	
-	var ymTo = ComGetNowInfo("ym", "-");				// careful with the order of ymTo and ymFrom
+	var ymTo = ComGetNowInfo("ym", "-"); // careful with the order of ymTo and ymFrom
 	formObj.s_date_to.value = ymTo;
 	
-	var ymFrom = ComGetDateAdd(ymTo + "-01", "M", -1);
+	//var ymFrom = ComGetDateAdd(ymTo + "-01", "M", -1);
+	var ymFrom = ComGetDateAdd(ymTo, "M", -1);
     formObj.s_date_fr.value = getDateFormat(ymFrom, "ym");
+     
 }
 
 /**
@@ -373,10 +354,7 @@ function initCalendar() {
  */
 function addMonth(obj, month) {
 	if(obj.value != ""){
-		// substr(start, length)
-		//console.log("object value "+obj.value);
 		obj.value = ComGetDateAdd(obj.value + "-01", "M", month).substr(0, 7);
-		//obj.value = ComGetDateAdd(obj.value, "M", month).substr(0, 7);
 	}
 	
 	//Requirement: Year Month (OnChange) : clear data on Grid of Summary & Details tab.
@@ -392,9 +370,7 @@ function addMonth(obj, month) {
  * @param sFormat
  */
 function getDateFormat(obj, sFormat) {
-	//console.log(obj);
 	var sVal = String(getArgValue(obj));
-	//console.log("sVal "+sVal);
     sVal = sVal.replace(/\/|\-|\.|\:|\ /g, "");
     if (ComIsEmpty(sVal)) return "";
 
@@ -414,35 +390,23 @@ function getDateFormat(obj, sFormat) {
  * @returns Boolean
  */
 function checkOverThreeMonth() {
-	/*var from = new Date(document.form.s_date_fr.value);
-	var to = new Date(document.form.s_date_to.value);
-	
-	var month = (to.getFullYear() - from.getFullYear()) * 12;
-	month -= from.getMonth();
-	month += to.getMonth();
-	
-	return month < 3 ? false : true;*/
-	
 	var formObj = document.form;
 	var fromDate = formObj.s_date_fr.value.replaceStr("-", "") + "01";
 	var toDate = formObj.s_date_to.value.replaceStr("-", "") + "01";
 	
-	console.log("From date " + fromDate);
-	console.log("To date " + toDate);
-	console.log(ComGetDaysBetween(fromDate, toDate));
-	
 	return ComGetDaysBetween(fromDate, toDate) > 88 ? true : false;
 }
 
+/**
+ * check valid date<br>
+ * 
+ * @returns {Boolean}
+ */
 function isValidDate() {
-//	var formObj = document.form;
-//	var fromDate = formObj.s_date_fr.value.replaceStr("-", "") + "01";
-//	var toDate = formObj.s_date_to.value.replaceStr("-", "") + "01";
-//	return ComGetDaysBetween(fromDate, toDate) > 88;
-	
-	var from = new Date(document.form.s_date_fr.value);
-	var to = new Date(document.form.s_date_to.value);
-	return from < to;
+	var formObj = document.form;
+	var fromDate = formObj.s_date_fr.value.replaceStr("-", "") + "01";
+	var toDate = formObj.s_date_to.value.replaceStr("-", "") + "01";
+	return ComGetDaysBetween(fromDate, toDate) > 0;
 }
 
 /**
@@ -473,18 +437,15 @@ function initCombo(comboObj, comboNo) {
 		case 0:
 			comboObj.SetDropHeight(250);
 			comboObj.SetMultiSelect(1);
-			//console.log("partnerCodes " + partnerCodes);
 			addComboItem(comboObj, partnerCodes);
 			comboObj.SetItemCheck(0, true, false);
 			comboObjects[1].SetEnable(false);
             comboObjects[2].SetEnable(false);
 			break;
 		case 1:
-			//console.log("laneCodes " + laneCodes);
 			addComboItem(comboObj, laneCodes);
 			break;
 		case 2:
-			//console.log("tradeCodes " + tradeCodes);
 			addComboItem(comboObj, tradeCodes);
 			break;
 	}
@@ -499,13 +460,6 @@ function initCombo(comboObj, comboNo) {
 function addComboItem(comboObj, comboItems) {
 	comboItems = comboItems ? comboItems.split("|") : [];
 	
-	/*
-	 * InsertItem(Index, Text, Code)
-	 * + Index 		  (Integer): row index of the item to add (required).
-	 * + Text(value)  (String) : text(value) of the item to add.
-	 * + Code 		  (String0 : code of the item to add, if not entered, the Index is converted to a string
-	 * 							 and used as the Code value.
-	 */
 	for(var i=0; i<comboItems.length; i++){
 		comboObj.InsertItem(i, comboItems[i], comboItems[i]);
 	}
@@ -519,12 +473,7 @@ function addComboItem(comboObj, comboItems) {
  */
 function checkAllItem(comboObj, status) {
 	var size = comboObj.GetItemCount();
-	/*
-	 * SetItemCheck(Index_Code, Flag, Event)
-	 * + Index_Code (String) : value of a specific index or code. (required)
-	 * + Flag (Boolean) : Selection or Clear status. (required)
-	 * + Event (Boolean) : Event handler calling status. (default: true, optional)
-	 */
+	
 	for(var i=1; i<size; i++) { //start from i=1 because the first item is "All"
 		comboObj.SetItemCheck(i, status, false);
 	}
@@ -556,20 +505,9 @@ function isCheckAllItem(comboObj) {
  * @param checked
  */
 function s_partner_code_OnCheckClick(comboObj, index, value, checked){
-	/*
-	 * An event occur when the items of check box is clicked, if multiple selection is used.
-	 * Syntax: function object ID_OnCheckClick(Index, Code)
-	 * + Index 	 (Integer) index value of the clicked item.
-	 * + Code    (String)  code value of the clicked item.
-	 * + Checked (Boolean) the value that specifies whether checked or not.
-	 */
-	console.log("OnCheckClick() is calling");
-	console.log("Index "+ index +", value "+ value +", status "+checked);
-	console.log("GetItemCheck() "+ comboObj.GetItemCheck(index));
-	
 	if(checked){
 		if(value === "All"){
-			checkAllItem(comboObj, false); //why false
+			checkAllItem(comboObj, false);
 			
 		}else if(comboObj.GetItemCheck(0)){
 			comboObj.SetItemCheck(0, false, false);
@@ -592,7 +530,6 @@ function s_partner_code_OnCheckClick(comboObj, index, value, checked){
  */
 function s_partner_code_OnBlur() {
     enableLaneCombo(true);
-    //enableTradeCombo(true);
 }
 
 /**
@@ -650,58 +587,76 @@ function enableTradeCombo(generate){
  * @param comboNo
  */
 function generateComboData(comboNo) {
+	ComOpenWait(true);
 	comboObj = comboObjects[comboNo];
-	comboObj.RemoveAll(); //why here?
+	comboObj.RemoveAll(); 
 	formObj = document.form;
 	
-	ComOpenWait(true);
 	if(comboNo === 1){ // lane combo-box
 		formObj.f_cmd.value = SEARCH02;
-		var xml = sheetObjects[0].GetSearchData("MoneyMgmtGS.do", FormQueryString(formObj));
+		var xml = sheetObjects[0].GetSearchData("ESM_DOU_0108GS.do", FormQueryString(formObj));
 		laneCodes = ComGetEtcData(xml, "laneCodes");
-		//console.log("generate laneCodes " + laneCodes);
 		
 	}else { //trade combo-box
 		formObj.f_cmd.value = SEARCH03;
-		var xml = sheetObjects[0].GetSearchData("MoneyMgmtGS.do", FormQueryString(formObj));
+		var xml = sheetObjects[0].GetSearchData("ESM_DOU_0108GS.do", FormQueryString(formObj));
 		tradeCodes = ComGetEtcData(xml, "tradeCodes");
-		//console.log("generate tradeCodes " + tradeCodes);
 	}
-	ComOpenWait(false);
 	
 	initCombo(comboObj, comboNo);
+	ComOpenWait(false);
 }
 
-
+/**
+ * Get value of partner combo
+ */
 function getPartnerValue(){
 	return document.form.s_partner_code_text.value;
 }
 
+/**
+ * Set value for partner combo
+ * @param value
+ */
 function setPartnerValue(value) {
     document.form.s_partner_code_text.value = value;
     document.form.s_partner_code.value = value;
 }
 
+/**
+ * Get value of lane combo
+ */
 function getLaneValue() {
     return document.form.s_lane_code_text.value;
 }
 
+/**
+ * Set value for lane combo
+ * @param value
+ */
 function setLaneValue(value) {
     document.form.s_lane_code_text.value = value;
     document.form.s_lane_code.value = value;
 }
 
+/**
+ * Get value of trade combo
+ */
 function getTradeValue() {
     return document.form.s_trade_code_text.value;
 }
 
+/**
+ * Set value for lane combo
+ * @param value
+ */
 function setTradeValue(value) {
     document.form.s_trade_code_text.value = value;
     document.form.s_trade_code.value = value;
 }
 
 /**
- * 
+ * Event fires when user double click on sheet 1
  * 
  * @param sheetObj
  * @param Row
@@ -709,6 +664,7 @@ function setTradeValue(value) {
  */
 function sheet1_OnDblClick(sheetObj, Row, Col) {
 	formObj = document.form;
+	isDbClick = true;
 	
 	if(sheetObj.GetCellValue(Row, "joo_crr_cd") != ""){
 		if(searchDetail != searchSummary || sheetObjects[1].RowCount() === 0){
@@ -861,16 +817,12 @@ function handleOnChangeTab() {
  * @param nItem
  */
 function tab1_OnChange(tabObj, nItem) {
-	//nItem: tab item index which is clicked.
-	//console.log("nItem "+ nItem);
 	var tabObjects = document.all.item("tabLayer");
-	tabObjects[nItem].style.display = "inline";
+	ComShowObject(tabObjects[nItem], true);
 	
 	for(var i=0; i<tabObjects.length; i++){
 		if(i != nItem) {
-			//tabObjects[i].style.display = "none";
 			ComShowObject(tabObjects[i], false);
-			//tabObjects[beforeTab].style.zIndex = tabObjects[nItem].style.zIndex-1;
 		}
 	}
 	

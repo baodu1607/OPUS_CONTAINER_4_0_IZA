@@ -16,7 +16,7 @@ import java.util.List;
 
 import com.clt.apps.opus.esm.clv.practice3.moneymgmt.basic.MoneyMgmtBC;
 import com.clt.apps.opus.esm.clv.practice3.moneymgmt.basic.MoneyMgmtBCImpl;
-import com.clt.apps.opus.esm.clv.practice3.moneymgmt.event.MoneyTrn0003Event;
+import com.clt.apps.opus.esm.clv.practice3.moneymgmt.event.EsmDou0108Event;
 import com.clt.apps.opus.esm.clv.practice3.moneymgmt.vo.DetailVO;
 import com.clt.apps.opus.esm.clv.practice3.moneymgmt.vo.SummaryVO;
 import com.clt.framework.component.message.ErrorHandler;
@@ -65,14 +65,14 @@ public class MoneyManagementSC extends ServiceCommandSupport{
 	 * Carry out business scenarios for each event<br>
 	 * Branch processing of all events occurring in ALPS-MoneyMgmt system work<br>
 	 * 
-	 * @param e Event
+	 * @param Event e
 	 * @return EventResponse
 	 * @exception EventException
 	 */
 	public EventResponse perform(Event e) throws EventException {
 		EventResponse eventResponse = null;
 		
-		if (e.getEventName().equalsIgnoreCase("MoneyTrn0003Event")) {
+		if (e.getEventName().equalsIgnoreCase("EsmDou0108Event")) {
 			if (e.getFormCommand().isCommand(FormCommand.SEARCH)) {
 				eventResponse = searchSummaryVO(e);
 			}else if (e.getFormCommand().isCommand(FormCommand.DEFAULT)) {
@@ -99,7 +99,7 @@ public class MoneyManagementSC extends ServiceCommandSupport{
 	 */
 	private EventResponse searchDetailVO(Event e) throws EventException {
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
-		MoneyTrn0003Event event = (MoneyTrn0003Event)e;
+		EsmDou0108Event event = (EsmDou0108Event)e;
 		MoneyMgmtBC command = new MoneyMgmtBCImpl();
 		
 		try {
@@ -124,7 +124,7 @@ public class MoneyManagementSC extends ServiceCommandSupport{
 	 */
 	private EventResponse searchSummaryVO(Event e) throws EventException {
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
-		MoneyTrn0003Event event = (MoneyTrn0003Event)e;
+		EsmDou0108Event event = (EsmDou0108Event)e;
 		MoneyMgmtBC command = new MoneyMgmtBCImpl();
 		
 		try {
@@ -147,7 +147,7 @@ public class MoneyManagementSC extends ServiceCommandSupport{
 	 */
 	private EventResponse searchTradeCodes(Event e) throws EventException{
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
-		MoneyTrn0003Event event = (MoneyTrn0003Event)e;
+		EsmDou0108Event event = (EsmDou0108Event)e;
 		MoneyMgmtBC command = new MoneyMgmtBCImpl();
 		
 		try {
@@ -180,7 +180,7 @@ public class MoneyManagementSC extends ServiceCommandSupport{
 	 */
 	private EventResponse searchLaneCodes(Event e) throws EventException {
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
-		MoneyTrn0003Event event = (MoneyTrn0003Event) e;
+		EsmDou0108Event event = (EsmDou0108Event) e;
 		MoneyMgmtBC command = new MoneyMgmtBCImpl();
 		
 		try {
