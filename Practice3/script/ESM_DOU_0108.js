@@ -250,6 +250,7 @@ function doActionIBSheet(sheetObj, formObj, sAction) {
 				sheetObj.LoadSearchData(xml, {Sync: 1});
 			} else {
 				searchDetail = searchSummary;
+				console.log("searchForDbl "+ searchForDbl);
 				var xml = sheetObj.GetSearchData("ESM_DOU_0108GS.do", searchForDbl);
 				sheetObj.LoadSearchData(xml, {Sync: 1});
 			}
@@ -664,6 +665,7 @@ function sheet1_OnDblClick(sheetObj, Row, Col) {
 				return;
 			}
 		}
+		console.log("Continue");
 		ComShowCodeMessage('COM132701'); //There is no data to search
 	}
 }
@@ -757,17 +759,23 @@ function showTotalSum(sheetObj) {
  */
 function handleOnChangeTab() {
 	if(firstLoad) {
+		console.log("firstLoad OnChangeTab");
 		firstLoad = false;
 		return;
 	}
 	
 	if(isDbClick){
+		console.log("isDbClick OnChangeTab");
 		isDbClick = false;
 		return;
 	}
 	
 	var currentSheet = getCurrentSheet();
 	var formQuery = getCurrentSearchOption(); //partner, lane, trade
+	console.log("formQuery " + formQuery);
+	console.log("searchSummary " + searchSummary);
+	console.log("searchDetail " + searchDetail);
+	console.log("searchForDbl " + searchForDbl);
 	
 	if(searchSummary != formQuery && formQuery != searchDetail) {
 		if(ComShowCodeConfirm('ESM0004')) { // search data was changed. do you want to retrieve?
@@ -778,11 +786,15 @@ function handleOnChangeTab() {
 	}
 	
 	if(currentSheet.id === "sheet1") { //summary sheet
+		console.log("searching for summary.")
 		if(searchSummary != formQuery) {
+			console.log("searchSummary !== formQuery");
 			doActionIBSheet(currentSheet, document.form, IBSEARCH);
 		}
 	}else { //detail sheet
+		console.log("searching for detail.")
 		if(searchDetail != formQuery) {
+			console.log("searchDetail !== formQuery");
 			doActionIBSheet(currentSheet, document.form, IBSEARCH);
 		}
 	}
@@ -796,6 +808,7 @@ function handleOnChangeTab() {
  * @param nItem
  */
 function tab1_OnChange(tabObj, nItem) {
+	console.log("Change tab");
 	console.log("nItem "+ nItem);
 	var tabObjects = document.all.item("tabLayer");
 	ComShowObject(tabObjects[nItem], true);
