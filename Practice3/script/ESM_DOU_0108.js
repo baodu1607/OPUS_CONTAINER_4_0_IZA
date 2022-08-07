@@ -26,10 +26,10 @@ var tradeCodes = "";
 
 var searchDetail = "";
 var searchSummary = "";
+var searchForDbl = "";
 
 var isDbClick = false;
 var firstLoad = true;
-var searchForDbl = "";
 
 var checkOver3M = false;
 
@@ -99,9 +99,10 @@ function initSheet(sheetObj, sheetNo) {
                             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "cust_vndr_eng_nm", KeyField: 0 }
                         ];
                 InitColumns(cols);
-                SetEditable(0);
+                SetEditable(1);
                 SetWaitImageVisible(0);
-                ShowSubSum([{ StdCol: "inv_no", SumCols: "7|8", ShowCumulate: 0, CaptionText: " ", CaptionCol: 3 }]);               
+                ShowSubSum([{ StdCol: "inv_no", SumCols: "7|8", ShowCumulate: 0, CaptionText: " ", CaptionCol: 3 }]);
+                resizeSheet();
 			}
 			break;
 		case 2:
@@ -133,10 +134,10 @@ function initSheet(sheetObj, sheetNo) {
                             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "cust_vndr_eng_nm", KeyField: 0 }
                         ];
                 InitColumns(cols);
-                SetEditable(0);
+                SetEditable(1);
                 SetWaitImageVisible(0);
                 ShowSubSum([{ StdCol: "inv_no", SumCols: "9|10", ShowCumulate: 0, CaptionText: " ", CaptionCol: 3 }]);
-                //SetSumFontBold(1);
+                resizeSheet();
 			}
 			break;
 	}
@@ -252,7 +253,6 @@ function doActionIBSheet(sheetObj, formObj, sAction) {
 				var xml = sheetObj.GetSearchData("ESM_DOU_0108GS.do", searchForDbl);
 				sheetObj.LoadSearchData(xml, {Sync: 1});
 			}
-			
 			break;
 			
 		case IBRESET:
@@ -339,11 +339,10 @@ function initCalendar() {
 	
 	var ymTo = ComGetNowInfo("ym", "-"); // careful with the order of ymTo and ymFrom
 	formObj.s_date_to.value = ymTo;
-	
-	//var ymFrom = ComGetDateAdd(ymTo + "-01", "M", -1);
-	var ymFrom = ComGetDateAdd(ymTo, "M", -1);
-    formObj.s_date_fr.value = getDateFormat(ymFrom, "ym");
      
+    var ymFrom = ComGetDateAdd(ymTo, "M", -1);
+    ymFrom = ComReplaceStr(ymFrom, "-", "").substring(0, 6);
+    formObj.s_date_fr.value = ComGetMaskedValue(ymFrom, "ym");
 }
 
 /**
@@ -361,27 +360,6 @@ function addMonth(obj, month) {
 	for(var i=0; i<sheetObjects.length; i++){
 		sheetObjects[i].RemoveAll();
 	}
-}
-
-/**
- * Get format date<br>
- * 
- * @param obj
- * @param sFormat
- */
-function getDateFormat(obj, sFormat) {
-	var sVal = String(getArgValue(obj));
-    sVal = sVal.replace(/\/|\-|\.|\:|\ /g, "");
-    if (ComIsEmpty(sVal)) return "";
-
-    var retValue = "";
-    switch (sFormat) {
-        case "ym":
-            retValue = sVal.substring(0, 6);
-            break;
-    }
-    retValue = ComGetMaskedValue(retValue, sFormat);
-    return retValue;
 }
 
 /**
@@ -673,7 +651,7 @@ function sheet1_OnDblClick(sheetObj, Row, Col) {
 		
 		//Because we only chooses some of these rows but they are discontinuous ==> using "SaveName"
 		var columnNames = ["jo_crr_cd", "rlane_cd", "inv_no", "csr_no", "locl_curr_cd", "prnr_ref_no"];
-		var summaryData = getDataRow(sheetObjects[0], Row, columnNames);
+		var summaryData = getDataRow(sheetObjects[0], Row, columnNames); //only one row
 		var detailRowCount = sheetObjects[1].RowCount(); 
 		
 		for(var i=2; i<detailRowCount; i++){
@@ -686,7 +664,7 @@ function sheet1_OnDblClick(sheetObj, Row, Col) {
 				return;
 			}
 		}
-		ComShowCodeMessage('COM132701');
+		ComShowCodeMessage('COM132701'); //There is no data to search
 	}
 }
 
@@ -703,6 +681,7 @@ function getDataRow(sheetObj, row, saveNames) {
 	for (var i = 0; i < saveNames.length; i++) {
 		result += sheetObj.GetCellValue(row, saveNames[i]);
 	}
+	console.log("result " + result);
 	return result;
 }
 
@@ -817,6 +796,7 @@ function handleOnChangeTab() {
  * @param nItem
  */
 function tab1_OnChange(tabObj, nItem) {
+	console.log("nItem "+ nItem);
 	var tabObjects = document.all.item("tabLayer");
 	ComShowObject(tabObjects[nItem], true);
 	
