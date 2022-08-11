@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls>
+	<querys>
+		<query name="UsersMgmtDBDAOUsersManagementVOCSQL">
+			<desc><![CDATA[Inserting users account]]></desc>
+			<sql><![CDATA[
+INSERT INTO FEUSERMANAGEMENT (
+	ENDDATE
+,	STARTDATE
+,	ACTIVE
+,	USERNAME
+,	USERID
+) VALUES( 
+	TO_DATE(@[enddate],'YYYY-MM-DD')
+,	TO_DATE(@[startdate],'YYYY-MM-DD')
+,	@[active]
+,	@[username]
+,	@[userid]
+)			]]></sql>
+			<params>
+				<param name="enddate" type="12" value="" out="N"/>
+				<param name="startdate" type="12" value="" out="N"/>
+				<param name="active" type="12" value="" out="N"/>
+				<param name="username" type="12" value="" out="N"/>
+				<param name="userid" type="12" value="" out="N"/>
+			</params>
+		</query>
+	</querys>
+</sqls>
