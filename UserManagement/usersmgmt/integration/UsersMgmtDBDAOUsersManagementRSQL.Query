@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls>
+	<querys>
+		<query name="UsersMgmtDBDAOUsersManagementRSQL">
+			<desc><![CDATA[Searching for users account.]]></desc>
+			<sql><![CDATA[
+SELECT 
+	ENDDATE
+,	STARTDATE
+,	ACTIVE
+,	USERNAME
+,	USERID
+FROM FEUSERMANAGEMENT
+WHERE 1=1
+#if(${userid} != '')
+AND	UPPER(USERID) LIKE '%'||UPPER(@[userid])||'%'
+#end
+#if(${username} != '')
+AND	UPPER(USERNAME) LIKE '%'||UPPER(@[username])||'%'
+#end
+#if(${active} == 'N')
+AND ACTIVE = 0
+#end
+#if(${active} == 'Y')
+AND ACTIVE = 1
+#end			]]></sql>
+			<params>
+				<param name="userid" type="12" value="" out="N"/>
+				<param name="username" type="12" value="" out="N"/>
+			</params>
+		</query>
+	</querys>
+</sqls>
