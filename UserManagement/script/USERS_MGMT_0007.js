@@ -77,10 +77,10 @@ function initSheet(sheetObj, sheetNo) {
 				
 				var cols = [
 				             {Type:"Status", Hidden:1, Width:30,   Align:"Center",  ColMerge:0,   SaveName:"ibflag" },
-				             {Type:"Text",   Hidden:0, Width:100,  Align:"Center",  ColMerge:0,   SaveName:"userid",    KeyField:1, 	UpdateEdit:0,   InsertEdit:1 },
+				             {Type:"Text",   Hidden:0, Width:100,  Align:"Center",  ColMerge:0,   SaveName:"userid",    KeyField:1, 	UpdateEdit:0,   InsertEdit:1, AcceptKeys: "N|E" },
 			                 {Type:"Text",   Hidden:0, Width:100,  Align:"Center",  ColMerge:0,   SaveName:"username",  KeyField:1, 	UpdateEdit:1,   InsertEdit:1 },
 			                 //{Type:"Combo",  Hidden:0, Width:80,   Align:"Center",  ColMerge:0,   SaveName:"active",    KeyField:0, 	UpdateEdit:1,   InsertEdit:1, ComboText:"Yes|No", ComboCode:"Y|N"},
-			                 {Type:"CheckBox",   Hidden:0, Width:50,   Align:"Center",    ColMerge:0,   SaveName:"active",    KeyField:0, 	UpdateEdit:1,   InsertEdit:1, FalseValue: "0"},
+			                 {Type:"CheckBox",   Hidden:0, Width:50,   Align:"Center",    ColMerge:0,   SaveName:"active",    KeyField:0, 	UpdateEdit:1,   InsertEdit:1},
 			                 {Type:"Date",   Hidden:0, Width:250,  Align:"Left",    ColMerge:0,   SaveName:"startdate", KeyField:1, 	UpdateEdit:1,   InsertEdit:1 },
 			                 {Type:"Date",   Hidden:0, Width:250,  Align:"Left",    ColMerge:0,   SaveName:"enddate",   KeyField:0, 	UpdateEdit:1,   InsertEdit:1 }
 				            ];
@@ -175,6 +175,7 @@ function doActionIBSheet(sheetObj, formObj, sAction) {
 			break;
 			
 		case IBSAVE:
+			//sheetObj, colName
 			formObj.f_cmd.value = MULTI;
 			sheetObj.DoSave("USERS_MGMT_0007GS.do", FormQueryString(formObj));
 			break;
@@ -192,6 +193,85 @@ function doActionIBSheet(sheetObj, formObj, sAction) {
 		
 	}
 }
+
+/**
+ * Catch the changes on Sheet.
+ * 
+ * @param sheetObj
+ * @param Row
+ * @param Col
+ */
+function sheet1_OnChange(sheetObj, Row, Col){
+	if(!isNotDuplicate(sheetObj, Row, Col)){
+		ComShowMessage("User ID exists. Please input another.");
+		sheetObj.SetCellValue(Row, Col, "");
+		return;
+	}
+	
+	var colName = sheetObj.ColSaveName(Col);
+	
+	if((colName === "enddate" && sheetObj.GetCellValue(Row, "startdate") !== "") ||
+			(colName ==="startdate" && sheetObj.GetCellValue(Row, "enddate") !== "")){
+		if(!isValidDate(sheetObj, Row, Col)){
+			ComShowCodeConfirm("ESM0001");
+			sheetObj.SetCellValue(Row, "startdate","");
+		}
+	}
+	
+	/*if(colName === "enddate" && sheetObj.GetCellValue(Row, "startdate") !== ""){
+		if(!isValidDate(sheetObj, Row, Col)){
+			ComShowCodeConfirm("ESM0001");
+			sheetObj.SetCellValue(Row, "startdate","");
+		}
+	}
+	if(colName ==="startdate" && sheetObj.GetCellValue(Row, "enddate") !== ""){
+		if(!isValidDate(sheetObj, Row, Col)){
+			ComShowCodeConfirm("ESM0001");
+			sheetObj.SetCellValue(Row, "startdate","");
+		}
+	}*/
+}
+
+/**
+ * Checking duplicate for User ID column.
+ * 
+ * @param sheetObj
+ * @param Row
+ * @param Col
+ * @returns {Boolean}
+ */
+function isNotDuplicate(sheetObj, Row, Col) {
+	if(sheetObj.ColSaveName(Col) === "userid"){
+		var userId = sheetObj.GetCellValue(Row, Col);
+		var findText = sheetObj.FindText("userid", userId, 1, -1);
+		if(findText !== -1 && findText !== sheetObj.GetSelectRow()){
+			return false;
+		}
+	}
+	return true;
+}
+
+/**
+ * Check valid date.
+ * 
+ * @returns {Boolean}
+ */
+function isValidDate(sheetObj, Row, Col) {	
+	var startDate = sheetObj.GetCellValue(Row, "startdate");
+	var endDate = sheetObj.GetCellValue(Row, "enddate");	
+	//console.log("startDate " + startDate);
+	//console.log("endDate " + endDate);
+	
+	//if(endDate === "") return true;
+	
+	if(ComGetDaysBetween(startDate, endDate) < 0) return false;
+	return true;	
+}
+
+//Check trường hợp startdate voi enddate đều có giá trị
+//Vì enddate rỗng thì không có vấn đề gì cả
+
+
 
 
 
