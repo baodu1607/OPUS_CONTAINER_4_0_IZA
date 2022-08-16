@@ -134,7 +134,7 @@ function processButtonClick(){
 				break;
 				
 			case "btn_New":
-				sheetObject1.DataInsert();
+				sheetObject1.DataInsert(0);
 				break;
 				
 			case "btn_Save":		
@@ -170,12 +170,24 @@ function doActionIBSheet(sheetObj, formObj, sAction) {
 		case IBSEARCH:
 			formObj.f_cmd.value = SEARCH;
 			sheetObj.DoSearch("USERS_MGMT_0007GS.do", FormQueryString(formObj));
-			var xml = sheetObj.GetSearchData("USERS_MGMT_0007GS.do", FormQueryString(formObj));
-			sheetObj.LoadSearchData(xml);
+			//var xml = sheetObj.GetSearchData("USERS_MGMT_0007GS.do", FormQueryString(formObj));
+			//sheetObj.LoadSearchData(xml);
 			break;
 			
 		case IBSAVE:
-			//sheetObj, colName
+			/*var selectRow = sheetObj.GetSelectRow();
+			console.log("Select Row " + selectRow);
+			if(sheetObj.GetCellValue(selectRow, "ibflag") === "I"){
+				if(isDuplicate(sheetObj, "userid")){
+					ComShowMessage("User ID is already exist. Please choose another.");
+					break;
+				}
+			}*/
+			
+			if(!isValidDate(sheetObj)){
+				ComShowCodeConfirm("ESM0001");
+				break;
+			}
 			formObj.f_cmd.value = MULTI;
 			sheetObj.DoSave("USERS_MGMT_0007GS.do", FormQueryString(formObj));
 			break;
@@ -201,24 +213,20 @@ function doActionIBSheet(sheetObj, formObj, sAction) {
  * @param Row
  * @param Col
  */
-function sheet1_OnChange(sheetObj, Row, Col){
-	if(!isNotDuplicate(sheetObj, Row, Col)){
-		ComShowMessage("User ID exists. Please input another.");
-		sheetObj.SetCellValue(Row, Col, "");
-		return;
-	}
+/*function sheet1_OnChange(sheetObj, Row, Col){
 	
+	var selectedRow = sheetObj.GetSelectRow();
 	var colName = sheetObj.ColSaveName(Col);
 	
-	if((colName === "enddate" && sheetObj.GetCellValue(Row, "startdate") !== "") ||
-			(colName ==="startdate" && sheetObj.GetCellValue(Row, "enddate") !== "")){
+	if((colName === "enddate" && sheetObj.GetCellValue(selectedRow, "startdate") !== "") ||
+			(colName ==="startdate" && sheetObj.GetCellValue(selectedRow, "enddate") !== "")){
 		if(!isValidDate(sheetObj, Row, Col)){
 			ComShowCodeConfirm("ESM0001");
 			sheetObj.SetCellValue(Row, "startdate","");
 		}
 	}
 	
-	/*if(colName === "enddate" && sheetObj.GetCellValue(Row, "startdate") !== ""){
+	if(colName === "enddate" && sheetObj.GetCellValue(Row, "startdate") !== ""){
 		if(!isValidDate(sheetObj, Row, Col)){
 			ComShowCodeConfirm("ESM0001");
 			sheetObj.SetCellValue(Row, "startdate","");
@@ -229,8 +237,8 @@ function sheet1_OnChange(sheetObj, Row, Col){
 			ComShowCodeConfirm("ESM0001");
 			sheetObj.SetCellValue(Row, "startdate","");
 		}
-	}*/
-}
+	}
+}*/
 
 /**
  * Checking duplicate for User ID column.
@@ -240,15 +248,18 @@ function sheet1_OnChange(sheetObj, Row, Col){
  * @param Col
  * @returns {Boolean}
  */
-function isNotDuplicate(sheetObj, Row, Col) {
-	if(sheetObj.ColSaveName(Col) === "userid"){
-		var userId = sheetObj.GetCellValue(Row, Col);
-		var findText = sheetObj.FindText("userid", userId, 1, -1);
-		if(findText !== -1 && findText !== sheetObj.GetSelectRow()){
-			return false;
+function isDuplicate(sheetObj, Col) {
+		var userId = sheetObj.GetCellValue(sheetObj.GetSelectRow(), Col);
+		//start from select row + 1 because FindText will include current select row
+		//to find but current select row is not in database. And it will stop, it mean
+		//we always find a userid that match with our userid. ==> start search from selectedRow + 1. 
+		var findText = sheetObj.FindText("userid", userId, 2, -1);
+		console.log("user ID " + userId);
+		console.log("findText " + findText);
+		if(findText !== -1){
+			return true;
 		}
-	}
-	return true;
+		return false;
 }
 
 /**
@@ -256,21 +267,25 @@ function isNotDuplicate(sheetObj, Row, Col) {
  * 
  * @returns {Boolean}
  */
-function isValidDate(sheetObj, Row, Col) {	
-	var startDate = sheetObj.GetCellValue(Row, "startdate");
-	var endDate = sheetObj.GetCellValue(Row, "enddate");	
-	//console.log("startDate " + startDate);
-	//console.log("endDate " + endDate);
+function isValidDate(sheetObj) {
+	var selectRow = sheetObj.GetSelectRow();
 	
-	//if(endDate === "") return true;
+	var startDate = sheetObj.GetCellValue(selectRow, "startdate");
+	var endDate = sheetObj.GetCellValue(selectRow, "enddate");		
+	
+	//enddate = "" is allow. So, this situation is no need to check
+	//we just check the situation that enddate and startdate contain values.
+	if(endDate === "") return true;
 	
 	if(ComGetDaysBetween(startDate, endDate) < 0) return false;
-	return true;	
+	
+	return true;
 }
 
-//Check trường hợp startdate voi enddate đều có giá trị
-//Vì enddate rỗng thì không có vấn đề gì cả
-
+function sheet1_OnChange(sheetObj, Row, Col){
+	var value = sheetObj.GetCellValue(Row, "ibflag");
+	//console.log("ibflag "+ value);
+}
 
 
 
