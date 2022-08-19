@@ -1,16 +1,29 @@
+--Câu 13
 Select to_char(sysdate, 'YYYYMMDD') || nvl(lpad(substr(max(ord_dttm), 9, 4)+1,4),'0001') as ord_dttm
 From tb_ord
 Where ord_dttm like to_char(sysdate, 'YYYYMMDD') || '%';
 
+SELECT to_char(sysdate, 'YYYYMMDD') || nvl(lpad(substr(max(ord_dttm), 9, 4)+1,4,000),'0001') as ord_dttm
+FROM tb_ord
+WHERE ord_dttm LIKE to_char(sysdate, 'YYYYMMDD') || '%';
+
+SELECT substr(max(ord_dttm), 9, 4)+1 FROM tb_ord;
+
+SELECT lpad(substr(max(ord_dttm), 9, 4)+1,4, 000) FROM tb_ord;
+
+SELECT max(ord_dttm) FROM tb_ord;
+SELECT 0001 + 1 FROM dual;
+--Câu 15
 SELECT
     MAX(prod_unit_amt) max_amt,
-    MAX(prod_unit_amt) min_amt,
+    MIN(prod_unit_amt) min_amt,
     AVG(prod_unit_amt) avg_amt,
     MIN(prod_nm)
-    KEEP(DENSE_RANK LAST ORDER BY prod_unit_amt) AS max_name 
+        KEEP(DENSE_RANK LAST ORDER BY prod_unit_amt) AS max_name 
 FROM tb_prod
 WHERE prod_unit_amt IS NOT NULL;
 
+--Câu 16a 
 SELECT pro_cd, 
        DENSE_RANK()
        OVER(
@@ -29,14 +42,7 @@ SELECT * FROM (
     GROUP BY pro_cd ) temp
 WHERE temp.rank <=3;
 
-SELECT cust_no,
-       ord_dttm,
-       ord_no,
-       pro_cd,
-       ROW_NUMBER()
-       OVER(PARTITION BY cust_no ORDER BY ord_dttm DESC) rank
-FROM tb_ord;
-
+--câu 16b
 SELECT cust_no, 
        ord_dttm,
        ord_no,
@@ -52,7 +58,7 @@ FROM (
 ) temp
 WHERE temp.rank = 1;
 
-
+--Câu 16c
 WITH report as (
     SELECT '201906' as dt from dual
     UNION ALL 
@@ -75,6 +81,7 @@ FROM report left
         GROUP BY pro_cd, substr(ord_dttm, 1, 6)
     ) ord ON report.dt = ord.ord_dttm;
     
+--Câu 16d
 WITH report as(
     SELECT '201906' as dt from dual
     UNION ALL
@@ -98,67 +105,8 @@ FROM report
         group by pro_cd,
                  substr(ord_dttm, 1, 6) 
     ) ord ON report.dt = ord.ord_dttm;
-    
+   
 
-select cust_grp_id,
-       count(*) 
-       over(partition by cust_grp_id) volumn,
-       cust_grp_hrchy_cd
-from mdm_customer
-group by cust_grp_id, cust_grp_hrchy_cd;
-
-select cust_grp_id
-from (
-    select cust_grp_id,
-       count(*) 
-       over(partition by cust_grp_id) volumn,
-       cust_grp_hrchy_cd
-    from mdm_customer
-    group by cust_grp_id, cust_grp_hrchy_cd
-)
-where cust_grp_hrchy_cd != 'G';
-
-with temp as (
-    select cust_grp_id,
-            count(*)
-            over(partition by cust_grp_id) volumn,
-            cust_grp_hrchy_cd
-    from mdm_customer
-    group by cust_grp_id,
-            cust_grp_hrchy_cd
-    order by cust_grp_id,
-            cust_grp_hrchy_cd
-)
-select cust_grp_id
-from (
-    select cust_grp_id,
-            cust_grp_hrchy_cd,
-            lead (cust_grp_id)
-            over(
-                order by cust_grp_id
-            ) next_cust_grp_id,
-            lead(cust_grp_hrchy_cd)
-            over( order by cust_grp_id) next_cust_grp_hrchy_cd
-    from
-        temp
-    where volumn = 2
-)
-where cust_grp_id = next_cust_grp_id and cust_grp_hrchy_cd != 'C'
-        and next_cust_grp_id != 'C';
-
-
-SELECT A.CUST_NO, A.ORD_NO, A.PRO_CD, B.PROD_NM
-FROM TB_ORD A,
-  TB_PROD B
-WHERE 1 = 1
-  AND A.PRO_CD = B.PROD_CD
-  AND B.PROD_CD IN ('00001','00002');
-  
-SELECT  A.CUST_NO, A.ORD_NO, A.PRO_CD
-  , (SELECT B.PROD_NM FROM TB_PROD B WHERE B.PROD_CD = A.PRO_CD) AS PROD_NM
-FROM TB_ORD A
-WHERE 1 = 1
-  AND A.PRO_CD IN ('00001','00002');
 
 
 
